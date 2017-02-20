@@ -1,0 +1,2832 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to Localization Toolbox’s documentation! &#8212; Localization Toolbox 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-localization-toolbox-s-documentation">
+<h1>Welcome to Localization Toolbox&#8217;s documentation!<a class="headerlink" href="#welcome-to-localization-toolbox-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-bin.Exp_Localization_00"></span><div class="section" id="exp-localization-00">
+<h2>Exp_Localization_00:<a class="headerlink" href="#exp-localization-00" title="Permalink to this headline">¶</a></h2>
+<p>is an example how to use a toolbox to build an experiment</p>
+<div class="section" id="experiment-objective">
+<h3>Experiment objective:<a class="headerlink" href="#experiment-objective" title="Permalink to this headline">¶</a></h3>
+<p>test a localisation algorithms in a real outdoor environment</p>
+<p>Building experiment consists of following steps:</p>
+<ul>
+<li><p class="first">setup of radio environment</p>
+</li>
+<li><p class="first">reading or generation of the measurements</p>
+</li>
+<li><p class="first">running experiments</p>
+<blockquote>
+<div><ul class="simple">
+<li>LS localization</li>
+<li>finger printing localization</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>Version 0.0: Tomaz Javornik (January 2017)</p>
+</div>
+</div>
+<span class="target" id="module-RE.Radio_Env"></span><div class="section" id="re-radio-env">
+<h2>RE.Radio_Env<a class="headerlink" href="#re-radio-env" title="Permalink to this headline">¶</a></h2>
+<p>contains the definition of the radio environment class.</p>
+<dl class="class">
+<dt id="RE.Radio_Env.RadioEnvironment">
+<em class="property">class </em><code class="descclassname">RE.Radio_Env.</code><code class="descname">RadioEnvironment</code><span class="sig-paren">(</span><em>Id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Env.html#RadioEnvironment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Env.RadioEnvironment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class stores and process radio environment:</p>
+<dl class="method">
+<dt id="RE.Radio_Env.RadioEnvironment.append">
+<code class="descname">append</code><span class="sig-paren">(</span><em>typ</em>, <em>Id</em>, <em>Element</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Env.html#RadioEnvironment.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Env.RadioEnvironment.append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends a new radio environment element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>typ</strong> (<em>str</em>) &#8211; type of radio environment [&#8220;Network&#8221;, &#8220;Raster Map&#8221;, &#8220;Measurements&#8221;]</li>
+<li><strong>Id</strong> (<em>str</em>) &#8211; Id of imported element</li>
+<li><strong>Element</strong> (<em>radio_network</em><em>,</em><em></em>) &#8211; element to be imported</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>IJS_Outdoor.append(&#8220;Network&#8221;, &#8220;Anchors&#8221;, Anchors)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Env.RadioEnvironment.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>typ</em>, <em>Id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Env.html#RadioEnvironment.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Env.RadioEnvironment.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the radio element from the radio environment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>typ</strong> (<em>str</em>) &#8211; type of radio environment</li>
+<li><strong>Id</strong> (<em>str</em>) &#8211; Id of radio environment</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Env.RadioEnvironment.experiment_est_loc_FP">
+<code class="descname">experiment_est_loc_FP</code><span class="sig-paren">(</span><em>pl_exp</em>, <em>ref_node_index</em>, <em>hist_plot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Env.html#RadioEnvironment.experiment_est_loc_FP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Env.RadioEnvironment.experiment_est_loc_FP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes experiment in radio environment:</p>
+<p>estimates the agent locations based using finger print method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pl_exp</strong> (<em>float</em>) &#8211; path loss exponent to convert RSSI to distance</li>
+<li><strong>ref_node_index</strong> (<em>int</em>) &#8211; index of the reference node</li>
+<li><strong>hist_plot</strong> (<em>bool</em>) &#8211; flag for plotting histogram of errors</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Env.RadioEnvironment.experiment_est_loc_LS">
+<code class="descname">experiment_est_loc_LS</code><span class="sig-paren">(</span><em>pl_exp</em>, <em>ref_node_index</em>, <em>hist_plot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Env.html#RadioEnvironment.experiment_est_loc_LS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Env.RadioEnvironment.experiment_est_loc_LS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describe experiment in radio environment:</p>
+<p>Estimates the agent locations using least square method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pl_exp</strong> (<em>float</em>) &#8211; path loss exponent to convert RSSI to distance</li>
+<li><strong>ref_node_index</strong> (<em>int</em>) &#8211; index of the reference node</li>
+<li><strong>hist_plot</strong> (<em>bool</em>) &#8211; flag for plotting histogram of errors</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Env.RadioEnvironment.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>typ</em>, <em>Id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Env.html#RadioEnvironment.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Env.RadioEnvironment.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a radio environment element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>typ</strong> (<em>str</em>) &#8211; type of radio environment</li>
+<li><strong>Id</strong> (<em>str</em>) &#8211; Id of radio environment</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">radio environment element</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">network, raster_maps, measurements</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>IJS_Outdoor.get(&#8220;Network&#8221;, &#8220;Anchors&#8221;)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Env.RadioEnvironment.get_Ids">
+<code class="descname">get_Ids</code><span class="sig-paren">(</span><em>typ</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Env.html#RadioEnvironment.get_Ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Env.RadioEnvironment.get_Ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of radio environment Ids of type typ.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>typ</strong> (<em>str</em>) &#8211; type of radio environment [&#8220;Network&#8221;, &#8220;Raster Map&#8221;, &#8220;Measurements&#8221;]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a list of radio environment of type typ</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[str, str, str, ..]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Env.RadioEnvironment.get_Region">
+<code class="descname">get_Region</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Env.html#RadioEnvironment.get_Region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Env.RadioEnvironment.get_Region" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the region of the radio environment [west, south, delta_west, delta_north, cols, rows]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Env.RadioEnvironment.replace">
+<code class="descname">replace</code><span class="sig-paren">(</span><em>typ</em>, <em>Id</em>, <em>element</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Env.html#RadioEnvironment.replace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Env.RadioEnvironment.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces the element in radio environment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>typ</strong> (<em>str</em>) &#8211; element type</li>
+<li><strong>Id</strong> (<em>str</em>) &#8211; element Id</li>
+<li><strong>element</strong> &#8211; new element</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Env.RadioEnvironment.set_Region">
+<code class="descname">set_Region</code><span class="sig-paren">(</span><em>Region</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Env.html#RadioEnvironment.set_Region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Env.RadioEnvironment.set_Region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the region of the radio environment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>float</strong><strong>, </strong><strong>float</strong><strong>, </strong><strong>float</strong><strong>, </strong><strong>int</strong><strong>, </strong><strong>int Region</strong> (<em>float</em><em>,</em><em></em>) &#8211; [west, south, delta_west, delta_north, cols, rows]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>IJS_Outdoor.set_Region([0.0, 0.0, 1.0, 1.0, 10, 10])</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-RE.Radio_Net"></span><div class="section" id="re-radio-net">
+<h2>RE.Radio_Net<a class="headerlink" href="#re-radio-net" title="Permalink to this headline">¶</a></h2>
+<p>package contains node and network class.</p>
+<dl class="function">
+<dt id="RE.Radio_Net.RSSI_to_dist">
+<code class="descclassname">RE.Radio_Net.</code><code class="descname">RSSI_to_dist</code><span class="sig-paren">(</span><em>RSSI_dBm</em>, <em>fc_MHz</em>, <em>tx_pow_dBm</em>, <em>pl_coef</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RSSI_to_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RSSI_to_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts measured RSSI level to the distance using FSPL channel model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>RSSI_dBm</strong> (<em>float</em>) &#8211; RSSI value in [dBm]</li>
+<li><strong>fc_MHz</strong> (<em>float</em>) &#8211; carrier frequency in [MHZ]</li>
+<li><strong>tx_pow_dBm</strong> (<em>float</em>) &#8211; transmit power in [dBm]</li>
+<li><strong>pl_coef</strong> (<em>float</em>) &#8211; path loss coefficient</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">distance in [m]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="RE.Radio_Net.RadioNetwork">
+<em class="property">class </em><code class="descclassname">RE.Radio_Net.</code><code class="descname">RadioNetwork</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Defines radio network class:</strong>
+a set or radio nodes</p>
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.add_rnd_Loc">
+<code class="descname">add_rnd_Loc</code><span class="sig-paren">(</span><em>Region</em>, <em>N_nodes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.add_rnd_Loc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.add_rnd_Loc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds nodes random locations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Region</strong> &#8211; region of the map</li>
+<li><strong>N_nodes</strong> &#8211; number of nodes</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.append_RadioNode">
+<code class="descname">append_RadioNode</code><span class="sig-paren">(</span><em>radionode</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.append_RadioNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.append_RadioNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the RadioNode Node to the network.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Node</strong> &#8211; RadioNode</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.est_loc_FP">
+<code class="descname">est_loc_FP</code><span class="sig-paren">(</span><em>radio_env</em>, <em>Measurements_Id</em>, <em>Anchors_Id</em>, <em>pl_exp</em>, <em>ref_anchor_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.est_loc_FP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.est_loc_FP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate locations of nodes in radio network applying finger printing method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>radio_env</strong> &#8211; radio environment</li>
+<li><strong>Measurements_Id</strong> &#8211; id of measurements</li>
+<li><strong>Anchors_Id</strong> &#8211; id of anchor network</li>
+<li><strong>pl_exp</strong> &#8211; pathloss exponent</li>
+<li><strong>ref_anchor_index</strong> &#8211; reference anchor  index</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.est_loc_LS">
+<code class="descname">est_loc_LS</code><span class="sig-paren">(</span><em>radio_env</em>, <em>Measurements_Id</em>, <em>Anchors_Id</em>, <em>pl_exp</em>, <em>ref_anchor_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.est_loc_LS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.est_loc_LS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates locations of nodes in radio network applying least square method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>radio_env</strong> &#8211; radio environment</li>
+<li><strong>Measurements_Id</strong> &#8211; id of measurements</li>
+<li><strong>Anchors_Id</strong> &#8211; id of anchor network</li>
+<li><strong>pl_exp</strong> &#8211; pathloss exponent</li>
+<li><strong>ref_anchor_index</strong> &#8211; reference anchor  index</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.get_AreaLimits">
+<code class="descname">get_AreaLimits</code><span class="sig-paren">(</span><em>fract</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.get_AreaLimits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.get_AreaLimits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the rectengular area, where nodes are located.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fract</strong> &#8211; fraction of area to extend display</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">[west, south, east, north]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.get_Id">
+<code class="descname">get_Id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.get_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.get_Id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">network Id</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.get_Len">
+<code class="descname">get_Len</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.get_Len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.get_Len" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of nodes in radio network</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.get_Locations">
+<code class="descname">get_Locations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.get_Locations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.get_Locations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns node locations of nodes in network.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nodeId</strong> &#8211; nodes Id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">[west-east, south-north, alatitude above ground level]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.get_RadioNode">
+<code class="descname">get_RadioNode</code><span class="sig-paren">(</span><em>NodeId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.get_RadioNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.get_RadioNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns RadioNode with NodeId.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>NodeId</strong> &#8211; Id of radion node</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">RadioNode</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.get_RadioNode_FcMHz">
+<code class="descname">get_RadioNode_FcMHz</code><span class="sig-paren">(</span><em>nodeId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.get_RadioNode_FcMHz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.get_RadioNode_FcMHz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns RadioNode carrier frequency.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nodeId</strong> &#8211; node Id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">carrier frequncy in MHz</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.get_RadioNode_Ids">
+<code class="descname">get_RadioNode_Ids</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.get_RadioNode_Ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.get_RadioNode_Ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns list of RadioNode Ids.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of node Ids</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.get_RadioNode_Index">
+<code class="descname">get_RadioNode_Index</code><span class="sig-paren">(</span><em>NodeId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.get_RadioNode_Index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.get_RadioNode_Index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns radio node index</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>NodeId</strong> &#8211; Id of radio node</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">RadioNode</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.get_RadioNode_Loc">
+<code class="descname">get_RadioNode_Loc</code><span class="sig-paren">(</span><em>nodeId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.get_RadioNode_Loc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.get_RadioNode_Loc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns node location of node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nodeId</strong> &#8211; nodes Id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">[west-east, south-north, alatitude above ground level]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.get_RadioNode_PowdBm">
+<code class="descname">get_RadioNode_PowdBm</code><span class="sig-paren">(</span><em>nodeId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.get_RadioNode_PowdBm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.get_RadioNode_PowdBm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns RadioNode power.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nodeId</strong> &#8211; node Id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Tx/Rx power of node in dBm</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.get_RadioNodes">
+<code class="descname">get_RadioNodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.get_RadioNodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.get_RadioNodes" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of network Ids</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.get_Region_Map">
+<code class="descname">get_Region_Map</code><span class="sig-paren">(</span><em>margin</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.get_Region_Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.get_Region_Map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns radio map region.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>margin</strong> &#8211; margin beyond the area limits</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">region map [west, south, delta_west, delta_south, cols, rows]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.loc_error">
+<code class="descname">loc_error</code><span class="sig-paren">(</span><em>ref_network</em>, <em>plothist</em>, <em>D3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.loc_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.loc_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Esitmates location error between refence network and radio network.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ref_network</strong> &#8211; reference network</li>
+<li><strong>plothist</strong> &#8211; flag for printng error histogram</li>
+<li><strong>D3</strong> &#8211; flag to estimate error in three dimensions</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">[mean, median, error standard deivation]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>Marker</em>, <em>FigNum</em>, <em>ShowPlot</em>, <em>delta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the radio network on the map background.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Marker</strong> &#8211; marker</li>
+<li><strong>FigNum</strong> &#8211; figure number</li>
+<li><strong>ShowPlot</strong> &#8211; show plot flag</li>
+<li><strong>delta</strong> &#8211; size of boarder</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.print_Net">
+<code class="descname">print_Net</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.print_Net"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.print_Net" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the radio nodes on console.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.read_fromCsvFile">
+<code class="descname">read_fromCsvFile</code><span class="sig-paren">(</span><em>csvFilename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.read_fromCsvFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.read_fromCsvFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads newtwork from csv file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>csvFilename</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.set_Id">
+<code class="descname">set_Id</code><span class="sig-paren">(</span><em>Id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.set_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.set_Id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets network Id</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Id</strong> (<em>str</em>) &#8211; network id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.set_RadioNode_Alt">
+<code class="descname">set_RadioNode_Alt</code><span class="sig-paren">(</span><em>nodeId</em>, <em>alt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.set_RadioNode_Alt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.set_RadioNode_Alt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets radio node altitide above sea level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nodeId</strong> &#8211; node Id</li>
+<li><strong>alt</strong> &#8211; altitude in [m]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.set_RadioNode_BwMHz">
+<code class="descname">set_RadioNode_BwMHz</code><span class="sig-paren">(</span><em>nodeId</em>, <em>Bw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.set_RadioNode_BwMHz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.set_RadioNode_BwMHz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets radio node bandwidth.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nodeId</strong> &#8211; node Id</li>
+<li><strong>Bw</strong> &#8211; bandwidth in MHz</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.set_RadioNode_FcMHz">
+<code class="descname">set_RadioNode_FcMHz</code><span class="sig-paren">(</span><em>nodeId</em>, <em>Fc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.set_RadioNode_FcMHz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.set_RadioNode_FcMHz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets radio node carrier frequency.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nodeId</strong> &#8211; node Id</li>
+<li><strong>Fc</strong> &#8211; node carrie frequency in MHz</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.set_RadioNode_Loc">
+<code class="descname">set_RadioNode_Loc</code><span class="sig-paren">(</span><em>nodeId</em>, <em>Loc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.set_RadioNode_Loc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.set_RadioNode_Loc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets locations of radio nodes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nodeId</strong> &#8211; node Id</li>
+<li><strong>Loc</strong> &#8211; node location</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNetwork.set_RadioNode_PowdBm">
+<code class="descname">set_RadioNode_PowdBm</code><span class="sig-paren">(</span><em>nodeId</em>, <em>Pow</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNetwork.set_RadioNode_PowdBm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNetwork.set_RadioNode_PowdBm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets radio node Tx/Rx power.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nodeId</strong> &#8211; node Id</li>
+<li><strong>Pow</strong> &#8211; bandwidth in dBm</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="RE.Radio_Net.RadioNode">
+<em class="property">class </em><code class="descclassname">RE.Radio_Net.</code><code class="descname">RadioNode</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Defines RadioNode class.</strong></p>
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.est_loc_FP">
+<code class="descname">est_loc_FP</code><span class="sig-paren">(</span><em>radio_env</em>, <em>Measurements_Id</em>, <em>Anchors_Id</em>, <em>Mobiles_Id</em>, <em>pl_coef</em>, <em>ref_anchor_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.est_loc_FP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.est_loc_FP" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is method returns a location of node using fingerprint method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>radio_env</strong> &#8211; radio environment</li>
+<li><strong>Measurements_Id</strong> &#8211; Id of measurements</li>
+<li><strong>Anchors_Id</strong> &#8211; Id of Anchor network</li>
+<li><strong>Mobiles_Id</strong> &#8211; Id of Mobile network</li>
+<li><strong>pl_coef</strong> &#8211; Id of path loss coefficient</li>
+<li><strong>ref_anchor_index</strong> &#8211; index of reference Anchor node</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">location x, y, z coordinates of node</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.est_loc_LS">
+<code class="descname">est_loc_LS</code><span class="sig-paren">(</span><em>radio_env</em>, <em>Measurements_Id</em>, <em>Anchors_Id</em>, <em>Mobiles_Id</em>, <em>pl_coef</em>, <em>ref_anchor_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.est_loc_LS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.est_loc_LS" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method estimates the location of  node using least square method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>radio_env</strong> &#8211; radio environment</li>
+<li><strong>Measurements_Id</strong> &#8211; Id of measurements</li>
+<li><strong>Anchors_Id</strong> &#8211; Id of Anchor network</li>
+<li><strong>Mobiles_Id</strong> &#8211; Id of Mobile network</li>
+<li><strong>pl_coef</strong> &#8211; Id of path loss coefficient</li>
+<li><strong>ref_anchor_index</strong> &#8211; index of reference Anchor node</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">location x, y, z coordinate of the node</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_Alt">
+<code class="descname">get_Alt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_Alt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_Alt" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">altitude above see level in [m]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_AntAvgl">
+<code class="descname">get_AntAvgl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_AntAvgl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_AntAvgl" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">altitude above ground level in [m]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_AntAzimuth">
+<code class="descname">get_AntAzimuth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_AntAzimuth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_AntAzimuth" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">antenna azimuth in degrees</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_AntTilt">
+<code class="descname">get_AntTilt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_AntTilt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_AntTilt" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">antenna tilt in degrees</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_AntType">
+<code class="descname">get_AntType</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_AntType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_AntType" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">antenna type</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_BwMHz">
+<code class="descname">get_BwMHz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_BwMHz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_BwMHz" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">node bandwidth in MHz</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_FcMHz">
+<code class="descname">get_FcMHz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_FcMHz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_FcMHz" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">node carrier frequency in MHz</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_Id">
+<code class="descname">get_Id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_Id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Node Id</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_LatLong">
+<code class="descname">get_LatLong</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_LatLong"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_LatLong" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">node location in WGS84 format lat, long</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_Loc">
+<code class="descname">get_Loc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_Loc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_Loc" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">node location</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_Name">
+<code class="descname">get_Name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_Name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_Name" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">node name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_PowdBm">
+<code class="descname">get_PowdBm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_PowdBm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_PowdBm" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">transmit power in dBm if Tx, Rx power in dBm if Rx</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_WGS84">
+<code class="descname">get_WGS84</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_WGS84"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_WGS84" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">node location in WGS84 format [lat, long, altitude above see level]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.get_Z">
+<code class="descname">get_Z</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.get_Z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.get_Z" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">altitude above ground level in [m]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.print_node">
+<code class="descname">print_node</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.print_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.print_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints node configuration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.set_Alt">
+<code class="descname">set_Alt</code><span class="sig-paren">(</span><em>alt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.set_Alt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.set_Alt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets alititude above the see level in [m].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>alt</strong> &#8211; altitude in [m]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.set_AntAvgl">
+<code class="descname">set_AntAvgl</code><span class="sig-paren">(</span><em>alt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.set_AntAvgl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.set_AntAvgl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets node altitude above the ground level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>alt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.set_AntAzimuth">
+<code class="descname">set_AntAzimuth</code><span class="sig-paren">(</span><em>azimuth</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.set_AntAzimuth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.set_AntAzimuth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets antenna azimuth in degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>azimuth</strong> &#8211; antenna azimuth in degreee</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.set_AntTilt">
+<code class="descname">set_AntTilt</code><span class="sig-paren">(</span><em>tilt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.set_AntTilt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.set_AntTilt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets antenna tilt.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tilt</strong> &#8211; antenna tilt in degrees</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.set_AntType">
+<code class="descname">set_AntType</code><span class="sig-paren">(</span><em>ant</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.set_AntType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.set_AntType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets antenna type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ant</strong> &#8211; antenna type</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.set_BwMHz">
+<code class="descname">set_BwMHz</code><span class="sig-paren">(</span><em>bw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.set_BwMHz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.set_BwMHz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets node frequency bandwidth in MHz.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bw</strong> &#8211; frequency bandwidth in MHz</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.set_FcMHz">
+<code class="descname">set_FcMHz</code><span class="sig-paren">(</span><em>fc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.set_FcMHz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.set_FcMHz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets carrier frequency.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fc</strong> &#8211; carrier frequency in MHz</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.set_LatLong">
+<code class="descname">set_LatLong</code><span class="sig-paren">(</span><em>xlat</em>, <em>xlong</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.set_LatLong"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.set_LatLong" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets node location in WGS 84 format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>xlat</strong> &#8211; latitude in WGS84 dec format</li>
+<li><strong>xlong</strong> &#8211; longitude in WGS84 dec format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.set_Loc">
+<code class="descname">set_Loc</code><span class="sig-paren">(</span><em>loc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.set_Loc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.set_Loc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets node location.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>loc</strong> &#8211; location in [x, y, z] format</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.set_Name">
+<code class="descname">set_Name</code><span class="sig-paren">(</span><em>Name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.set_Name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.set_Name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets node name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Name</strong> &#8211; node Name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.set_PowdBm">
+<code class="descname">set_PowdBm</code><span class="sig-paren">(</span><em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.set_PowdBm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.set_PowdBm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets Rx or Tx power in dBm.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> &#8211; power in dBm</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.set_XY">
+<code class="descname">set_XY</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.set_XY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.set_XY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets node location.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; node x (east - west)</li>
+<li><strong>y</strong> &#8211; node y (south - north)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.set_Z">
+<code class="descname">set_Z</code><span class="sig-paren">(</span><em>alt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.set_Z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.set_Z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets node altitude above the ground level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>alt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Radio_Net.RadioNode.to_WGS84">
+<code class="descname">to_WGS84</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#RadioNode.to_WGS84"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.RadioNode.to_WGS84" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates lat, long from Guass Kreuger coordinates
+and set it in self.WGS84.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="RE.Radio_Net.to_num">
+<code class="descclassname">RE.Radio_Net.</code><code class="descname">to_num</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#to_num"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.to_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts string to number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>str</em>) &#8211; string to convert</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">number</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">number</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="RE.Radio_Net.to_str">
+<code class="descclassname">RE.Radio_Net.</code><code class="descname">to_str</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Radio_Net.html#to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Radio_Net.to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts number to sting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>float</em>) &#8211; number</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">string of x</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<span class="target" id="module-RE.Raster_Map"></span><div class="section" id="raster-map">
+<h2>Raster_Map<a class="headerlink" href="#raster-map" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>contains:</dt>
+<dd><ul class="first last simple">
+<li>RasterMap class</li>
+<li>RasterMaps class, a set of raster maps</li>
+</ul>
+</dd>
+</dl>
+<dl class="class">
+<dt id="RE.Raster_Map.RasterMap">
+<em class="property">class </em><code class="descclassname">RE.Raster_Map.</code><code class="descname">RasterMap</code><span class="sig-paren">(</span><em>Id</em>, <em>west</em>, <em>south</em>, <em>delta_west</em>, <em>delta_south</em>, <em>cols</em>, <em>rows</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Defines raster map object</strong></p>
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.ColsRows_to_xy">
+<code class="descname">ColsRows_to_xy</code><span class="sig-paren">(</span><em>cols</em>, <em>rows</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.ColsRows_to_xy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.ColsRows_to_xy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts map column, map row location to east-west, south-east location.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cols</strong> &#8211; map column</li>
+<li><strong>rows</strong> &#8211; map row</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">east-west, south-east location</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.RSSI_FSPL">
+<code class="descname">RSSI_FSPL</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.RSSI_FSPL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.RSSI_FSPL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the FSPL map for the transmitter at node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> &#8211; Tx node</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">FSPL map</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.add_Random">
+<code class="descname">add_Random</code><span class="sig-paren">(</span><em>Distribution</em>, <em>Params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.add_Random"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.add_Random" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds random number to the map pixel values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Distribution</strong> &#8211; distribution [&#8220;Normal&#8221;, &#8220;Rayleigh&#8221;, &#8220;LogNormal&#8221;]</li>
+<li><strong>Params</strong> &#8211; distrubution parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><em>MapId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies the map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>MapId</strong> &#8211; Id of new map</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">new map</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.dist">
+<code class="descname">dist</code><span class="sig-paren">(</span><em>x_point</em>, <em>y_point</em>, <em>val_point</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns map distance from point (x,y,val).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_point</strong> &#8211; east-west coordinate</li>
+<li><strong>y_point</strong> &#8211; south-east coordinate</li>
+<li><strong>val_point</strong> &#8211; value</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.generate_xy_mesh">
+<code class="descname">generate_xy_mesh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.generate_xy_mesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.generate_xy_mesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the mesh grid of west-east and south north values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">X -&gt; west-east, Y -&gt; south - north  array of raster points (x, y)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.get_Id">
+<code class="descname">get_Id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.get_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.get_Id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">map Id</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.get_Region">
+<code class="descname">get_Region</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.get_Region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.get_Region" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">region [west, south, d_west, d_south, Cols, Rows]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.get_Region_WSEN">
+<code class="descname">get_Region_WSEN</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.get_Region_WSEN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.get_Region_WSEN" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">region in west, south, east, north format</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.get_Values">
+<code class="descname">get_Values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.get_Values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.get_Values" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the values of raster map</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.get_aValue">
+<code class="descname">get_aValue</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.get_aValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.get_aValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the value of map at [x, y]  location.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; east-west</li>
+<li><strong>y</strong> &#8211; south-north</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">raster map value</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>FigNum</em>, <em>ShowPlot</em>, <em>ColorBar</em>, <em>Region</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots raster map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>FigNum</strong> &#8211; figure number</li>
+<li><strong>ShowPlot</strong> &#8211; flag to show plot on the screen</li>
+<li><strong>ColorBar</strong> &#8211; flag to show color bar</li>
+<li><strong>Region</strong> &#8211; map region</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.plot_Network">
+<code class="descname">plot_Network</code><span class="sig-paren">(</span><em>FigNum</em>, <em>ShowPlot</em>, <em>Marker</em>, <em>MarkerSize</em>, <em>Network</em>, <em>ColorBar</em>, <em>Legend_label</em>, <em>Region</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.plot_Network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.plot_Network" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the network.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>FigNum</strong> &#8211; figure number</li>
+<li><strong>ShowPlot</strong> &#8211; True/False if we want plot is shown</li>
+<li><strong>Marker</strong> &#8211; marker type [&#8220;s&#8221;, &#8220;o&#8221;, &#8220;x&#8221;, ...]</li>
+<li><strong>MarkerSize</strong> &#8211; size of marker in a plot</li>
+<li><strong>Network</strong> &#8211; network to be plotted</li>
+<li><strong>ColorBar</strong> &#8211; True/False plot color bar</li>
+<li><strong>Legend_label</strong> &#8211; Legend labels at nodes</li>
+<li><strong>Region</strong> &#8211; map region</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.print_Region">
+<code class="descname">print_Region</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.print_Region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.print_Region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the region of the map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.read_from_xyz_RaPlaT">
+<code class="descname">read_from_xyz_RaPlaT</code><span class="sig-paren">(</span><em>csv_file</em>, <em>delimiter</em>, <em>not_a_number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.read_from_xyz_RaPlaT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.read_from_xyz_RaPlaT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports Grass/RaPlaT file na generate raster map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ascii_file</strong> &#8211; ascii file from Grass/RaPlaT toolbox</li>
+<li><strong>delimiter</strong> &#8211; delimiter between data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Param:</th><td class="field-body"><p class="first">not_a_number: sign for not a number value</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">raster map</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.set_Id">
+<code class="descname">set_Id</code><span class="sig-paren">(</span><em>MapId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.set_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.set_Id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets map Id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>MapId</strong> &#8211; map Id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.set_Values">
+<code class="descname">set_Values</code><span class="sig-paren">(</span><em>in_values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.set_Values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.set_Values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets values to raster map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>in_values</strong> &#8211; np array of values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.set_aValue">
+<code class="descname">set_aValue</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.set_aValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.set_aValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a raster map value at coordinate x, y.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; west-east coordinate</li>
+<li><strong>y</strong> &#8211; south-north coordinate</li>
+<li><strong>value</strong> &#8211; value</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMap.xy_to_ColsRows">
+<code class="descname">xy_to_ColsRows</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMap.xy_to_ColsRows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMap.xy_to_ColsRows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts east-west, south-east location to map column and map row.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; east-west coordinate</li>
+<li><strong>y</strong> &#8211; south-east coordinate</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">column, row</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="RE.Raster_Map.RasterMaps">
+<em class="property">class </em><code class="descclassname">RE.Raster_Map.</code><code class="descname">RasterMaps</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Defines a set of raster maps.</strong></p>
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMaps.add_Random">
+<code class="descname">add_Random</code><span class="sig-paren">(</span><em>Distribution</em>, <em>Params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps.add_Random"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps.add_Random" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a random noise to the map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Distribution</strong> &#8211; distribution</li>
+<li><strong>Params</strong> &#8211; distribution parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMaps.append_Map">
+<code class="descname">append_Map</code><span class="sig-paren">(</span><em>Map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps.append_Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps.append_Map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a map to the maps.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Map</strong> &#8211; raster map</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMaps.calc_RSSI_FSPL">
+<code class="descname">calc_RSSI_FSPL</code><span class="sig-paren">(</span><em>Region</em>, <em>Txs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps.calc_RSSI_FSPL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps.calc_RSSI_FSPL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates received signal level using FSPL channel model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Region</strong> &#8211; set region</li>
+<li><strong>Txs</strong> &#8211; set of transmitters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMaps.get_Id">
+<code class="descname">get_Id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps.get_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps.get_Id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">raster maps Id</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMaps.get_Length">
+<code class="descname">get_Length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps.get_Length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps.get_Length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a number of maps in raster_maps.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">umber of maps</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMaps.get_Map">
+<code class="descname">get_Map</code><span class="sig-paren">(</span><em>MapId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps.get_Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps.get_Map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a map with MapId from the maps.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>MapId</strong> &#8211; map id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMaps.get_Net">
+<code class="descname">get_Net</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps.get_Net"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps.get_Net" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">network associated with the map</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMaps.get_Region">
+<code class="descname">get_Region</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps.get_Region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps.get_Region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Region map of maps.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMaps.get_Values">
+<code class="descname">get_Values</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps.get_Values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps.get_Values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns values of all maps in a set at location x, y.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; east-west location</li>
+<li><strong>y</strong> &#8211; norht-south location</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMaps.set_Id">
+<code class="descname">set_Id</code><span class="sig-paren">(</span><em>Id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps.set_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps.set_Id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets maps Id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Id</strong> &#8211; maps Id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMaps.set_Net">
+<code class="descname">set_Net</code><span class="sig-paren">(</span><em>network</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps.set_Net"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps.set_Net" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets network associated with the maps.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>network</strong> &#8211; network Id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMaps.set_Region">
+<code class="descname">set_Region</code><span class="sig-paren">(</span><em>Region</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps.set_Region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps.set_Region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a Region map of maps.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Region</strong> &#8211; region map</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Raster_Map.RasterMaps.set_Values">
+<code class="descname">set_Values</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Raster_Map.html#RasterMaps.set_Values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Raster_Map.RasterMaps.set_Values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a value to all maps in a set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; east-west location</li>
+<li><strong>y</strong> &#8211; north-south location</li>
+<li><strong>value</strong> &#8211; value</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-RE.Measurements"></span><div class="section" id="measurement">
+<h2>Measurement<a class="headerlink" href="#measurement" title="Permalink to this headline">¶</a></h2>
+<p>contains the definition of measurement classes:
+- measurement
+- trace - a set of measurements</p>
+<dl class="class">
+<dt id="RE.Measurements.Measurement">
+<em class="property">class </em><code class="descclassname">RE.Measurements.</code><code class="descname">Measurement</code><span class="sig-paren">(</span><em>Id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Measurement class stores and process measurements</p>
+<dl class="method">
+<dt id="RE.Measurements.Measurement.get_Id">
+<code class="descname">get_Id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.get_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.get_Id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Id of measurement</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.get_Rx_Network_Id">
+<code class="descname">get_Rx_Network_Id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.get_Rx_Network_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.get_Rx_Network_Id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Return id of rx network:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.get_Rx_Node_Id">
+<code class="descname">get_Rx_Node_Id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.get_Rx_Node_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.get_Rx_Node_Id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Rx node Id</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.get_TimeStamp">
+<code class="descname">get_TimeStamp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.get_TimeStamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.get_TimeStamp" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">returns the time stamp of measurement</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.get_Tx_Network_Id">
+<code class="descname">get_Tx_Network_Id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.get_Tx_Network_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.get_Tx_Network_Id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">id of Tx network</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.get_Tx_Node_Id">
+<code class="descname">get_Tx_Node_Id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.get_Tx_Node_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.get_Tx_Node_Id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Tx node Id</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.get_Type">
+<code class="descname">get_Type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.get_Type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.get_Type" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">type of measurement</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.get_Unit">
+<code class="descname">get_Unit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.get_Unit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.get_Unit" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">unit of measurement</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.get_Value">
+<code class="descname">get_Value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.get_Value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.get_Value" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">value of measurement</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.print_Measure">
+<code class="descname">print_Measure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.print_Measure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.print_Measure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the measurement on the console.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.set_Id">
+<code class="descname">set_Id</code><span class="sig-paren">(</span><em>Id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.set_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.set_Id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets Id of measurement.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Id</strong> &#8211; measurement Id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.set_Rx_Network_Id">
+<code class="descname">set_Rx_Network_Id</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.set_Rx_Network_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.set_Rx_Network_Id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets id of Rx network.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; Rx network id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.set_Rx_Node_Id">
+<code class="descname">set_Rx_Node_Id</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.set_Rx_Node_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.set_Rx_Node_Id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets Rx node Id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; Rx node Id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.set_TimeStamp">
+<code class="descname">set_TimeStamp</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.set_TimeStamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.set_TimeStamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setd time stamp of measurement.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; time stamp of measurement</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.set_Tx_Network_Id">
+<code class="descname">set_Tx_Network_Id</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.set_Tx_Network_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.set_Tx_Network_Id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets od of Tx network.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; Tx network id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.set_Tx_Node_Id">
+<code class="descname">set_Tx_Node_Id</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.set_Tx_Node_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.set_Tx_Node_Id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets Tx node Id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; Rx node Id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.set_Type">
+<code class="descname">set_Type</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.set_Type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.set_Type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets type of measurement.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; type of measurement</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.set_Unit">
+<code class="descname">set_Unit</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.set_Unit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.set_Unit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets unit of measurement.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Measurement.set_Value">
+<code class="descname">set_Value</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Measurement.set_Value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Measurement.set_Value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets value of measurement.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; value of measurement</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="RE.Measurements.Trace">
+<em class="property">class </em><code class="descclassname">RE.Measurements.</code><code class="descname">Trace</code><span class="sig-paren">(</span><em>Id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Class defines a set of measurement.</strong></p>
+<dl class="method">
+<dt id="RE.Measurements.Trace.add_error">
+<code class="descname">add_error</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace.add_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace.add_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>add error to the measurement
+:param args: type of error
+:returns:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Trace.append">
+<code class="descname">append</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace.append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends measurement.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; measurement in form of dictionary:</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Trace.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>tx_net_Id</em>, <em>tx_node_Id</em>, <em>rx_net_Id</em>, <em>rx_node_Id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all measurements which corresponds to following parameters:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tx_net_Id</strong> &#8211; tx network id</li>
+<li><strong>tx_node_Id</strong> &#8211; tx node id</li>
+<li><strong>rx_net_Id</strong> &#8211; rx network id</li>
+<li><strong>rx_node_Id</strong> &#8211; rx node id</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of measurements</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Trace.get_Id">
+<code class="descname">get_Id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace.get_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace.get_Id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">trace id</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Trace.get_measure_index">
+<code class="descname">get_measure_index</code><span class="sig-paren">(</span><em>Id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace.get_measure_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace.get_measure_index" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>id</strong> &#8211; measurement Id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">measurement index</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Trace.len">
+<code class="descname">len</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace.len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace.len" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of measurements</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Trace.print_Trace">
+<code class="descname">print_Trace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace.print_Trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace.print_Trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints trace on the console.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Trace.quantize_vals">
+<code class="descname">quantize_vals</code><span class="sig-paren">(</span><em>quant</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace.quantize_vals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace.quantize_vals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quantizes the measurement.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>quant</strong> &#8211; quantizaion of measurement results</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Trace.remove_measure">
+<code class="descname">remove_measure</code><span class="sig-paren">(</span><em>measure_Id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace.remove_measure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace.remove_measure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes measurement from trace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>measure_Id</strong> &#8211; measurement id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Trace.replace_measure">
+<code class="descname">replace_measure</code><span class="sig-paren">(</span><em>measure_Id</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace.replace_measure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace.replace_measure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces measurement in trace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>measure_Id</strong> &#8211; measurement id</li>
+<li><strong>x</strong> &#8211; new measurement</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Trace.set_Id">
+<code class="descname">set_Id</code><span class="sig-paren">(</span><em>Id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace.set_Id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace.set_Id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets trace id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Id</strong> &#8211; trace id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Trace.set_measure_value">
+<code class="descname">set_measure_value</code><span class="sig-paren">(</span><em>measure_Id</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace.set_measure_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace.set_measure_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces the value of measurements.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>measure_id</strong> &#8211; measurement id</li>
+<li><strong>value</strong> &#8211; new value</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="RE.Measurements.Trace.set_values_from_maps">
+<code class="descname">set_values_from_maps</code><span class="sig-paren">(</span><em>Maps</em>, <em>Locs</em>, <em>Rx_Ids</em>, <em>Tx_Ids</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/RE/Measurements.html#Trace.set_values_from_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RE.Measurements.Trace.set_values_from_maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets measurement value from the raster maps.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Maps</strong> &#8211; list of raster maps</li>
+<li><strong>Locs</strong> &#8211; list of locations</li>
+<li><strong>Rx_Ids</strong> &#8211; list of Rx Ids</li>
+<li><strong>Tx_Ids</strong> &#8211; listo of Tx Ids</li>
+<li><strong>x</strong> &#8211; measurement</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-misc.GIS"></span><div class="section" id="misc-gis">
+<h2>misc.GIS<a class="headerlink" href="#misc-gis" title="Permalink to this headline">¶</a></h2>
+<p>package contains GIS functions.</p>
+<dl class="function">
+<dt id="misc.GIS.GKtoWGS84">
+<code class="descclassname">misc.GIS.</code><code class="descname">GKtoWGS84</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/GIS.html#GKtoWGS84"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.GIS.GKtoWGS84" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts Gauss Kreuger EW/NS coordinate to latitude and longitude in WGS84 dec format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>float</em>) &#8211; east-west value in Gauss Kreuger</li>
+<li><strong>y</strong> (<em>float</em>) &#8211; south-north value in Gauss Kreuger</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">[latitude, longitude]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">[str, str]</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>lat, lng = GKtoWGS84(x, y)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="misc.GIS.WGS84toGK">
+<code class="descclassname">misc.GIS.</code><code class="descname">WGS84toGK</code><span class="sig-paren">(</span><em>in1</em>, <em>in2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/GIS.html#WGS84toGK"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.GIS.WGS84toGK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts latitude, longitude in WGS84 format to Gauss Kreuger coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>in1</strong> (<em>str</em>) &#8211; latitude in dec format</li>
+<li><strong>in2</strong> (<em>str</em>) &#8211; longitude in dec format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Gauss Kreuger east-west, south-north coordinates</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">[float, float]</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>x,y = WGS84toGK(14.50, 46.50)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="misc.GIS.dec2dms">
+<code class="descclassname">misc.GIS.</code><code class="descname">dec2dms</code><span class="sig-paren">(</span><em>indeg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/GIS.html#dec2dms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.GIS.dec2dms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns value written in decimal format in degrees, minutes, seconds format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indeg</strong> (<em>float</em>) &#8211; value in decimal format</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">value in degrees, minutes, seconds format</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="misc.GIS.dms2dec">
+<code class="descclassname">misc.GIS.</code><code class="descname">dms2dec</code><span class="sig-paren">(</span><em>dms_str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/GIS.html#dms2dec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.GIS.dms2dec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns decimal representation of DMS.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dms_str</strong> (<em>str</em>) &#8211; string in degrees minutes second format</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">value of dms_str in decimal format</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="misc.GIS.google_map">
+<em class="property">class </em><code class="descclassname">misc.GIS.</code><code class="descname">google_map</code><span class="sig-paren">(</span><em>title</em>, <em>html_file</em>, <em>map_center</em>, <em>map_zoom</em>, <em>map_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/GIS.html#google_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.GIS.google_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Google maps object.</p>
+<p>Creates a google_map object:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>title</strong> (<em>str</em>) &#8211; title of page</li>
+<li><strong>html_file</strong> (<em>str</em>) &#8211; filename of html_file</li>
+<li><strong>float</strong><strong>] </strong><strong>map_center</strong> (<em></em><em>[</em><em>float</em><em>,</em><em></em>) &#8211; center of map</li>
+<li><strong>map_zoom</strong> (<em>float</em>) &#8211; zoom of map</li>
+<li><strong>map_type</strong> (<em>str</em>) &#8211; map type: &#8220;roadmap&#8221;, &#8220;satellite&#8221;, &#8220;hybrid,&#8221;, &#8220;terrain&#8221;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">google_map object</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>html_map = google_map(&#8220;LOG.a.TEC&#8221;, plot_html_file, [46.0422, 14.4885], 20, &#8220;road&#8221;)</p>
+<dl class="method">
+<dt id="misc.GIS.google_map.add_net_from_csv">
+<code class="descname">add_net_from_csv</code><span class="sig-paren">(</span><em>csvfile</em>, <em>network_name</em>, <em>marker</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/GIS.html#google_map.add_net_from_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.GIS.google_map.add_net_from_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds network defined by csv file to the google_map object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>csvfile</strong> (<em>str</em>) &#8211; csv file name with the network</li>
+<li><strong>network_name</strong> (<em>str</em>) &#8211; name of the netwok</li>
+<li><strong>marker</strong> (<em>str</em>) &#8211; marker of nodes</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>google_map.add_net_from_csv(csv_file, &#8220;Anchors&#8221;, &#8220;sg&#8221;)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="misc.GIS.google_map.add_network">
+<code class="descname">add_network</code><span class="sig-paren">(</span><em>network</em>, <em>marker</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/GIS.html#google_map.add_network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.GIS.google_map.add_network" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a network network to the google_map object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>network</strong> (<em>str</em>) &#8211; name on network</li>
+<li><strong>network_name</strong> (<em>str</em>) &#8211; name of the network</li>
+<li><strong>marker</strong> &#8211; marker type</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="misc.GIS.google_map.add_node">
+<code class="descname">add_node</code><span class="sig-paren">(</span><em>node_Id</em>, <em>position</em>, <em>info_str</em>, <em>marker</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/GIS.html#google_map.add_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.GIS.google_map.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds new location (node) on the google map</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_Id</strong> (<em>str</em>) &#8211; Id of node</li>
+<li><strong>float</strong><strong>] </strong><strong>position</strong> (<em></em><em>[</em><em>float</em><em>,</em><em></em>) &#8211; [latitude, longitude]  in dms format</li>
+<li><strong>str</strong><strong>, </strong><strong></strong><strong>] </strong><strong>info_str</strong> (<em></em><em>[</em><em>str</em><em>,</em><em></em>) &#8211; display at clicking on the node</li>
+<li><strong>marker</strong> (<em>str</em>) &#8211; node marker: [x,s,o,f,a][r,g,b,k], &#8220;xg&#8221;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>html_map.add_node(4, [46.0423773, 14.4882363], [&#8220;Node 4&#8221;, &#8220;text 4&#8221;, &#8220;text 4&#8221;], &#8220;ak&#8221;)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="misc.GIS.google_map.add_overlay">
+<code class="descname">add_overlay</code><span class="sig-paren">(</span><em>overlay_Id</em>, <em>figure</em>, <em>bounds</em>, <em>opacity</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/GIS.html#google_map.add_overlay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.GIS.google_map.add_overlay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the transparent overlay on the google map object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>overlay_Id</strong> (<em>str</em>) &#8211; overlay ID</li>
+<li><strong>figure</strong> (<em>str</em>) &#8211; figure file of the overlay</li>
+<li><strong>float</strong><strong>, </strong><strong>float</strong><strong>] </strong><strong>bounds</strong> (<em></em><em>[</em><em>float</em><em>,</em><em></em>) &#8211; bounds of figure: [north, south, east, west]</li>
+<li><strong>opacity</strong> (<em>float</em>) &#8211; opacity [0 - 1.0] [transparent, non-transparent]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>google_map.add_overlay(1, &#8220;test.png&#8221;, region, 0.5)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="misc.GIS.google_map.get_file_name">
+<code class="descname">get_file_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/GIS.html#google_map.get_file_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.GIS.google_map.get_file_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns html file name of the google_map object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">name of html file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="misc.GIS.google_map.get_number_of_nodes">
+<code class="descname">get_number_of_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/GIS.html#google_map.get_number_of_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.GIS.google_map.get_number_of_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns number of nodes in google_map object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of nodes</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="misc.GIS.is_LatLong">
+<code class="descclassname">misc.GIS.</code><code class="descname">is_LatLong</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/GIS.html#is_LatLong"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.GIS.is_LatLong" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns float value of s: positive for N, E; negative for W, S</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> (<em>str</em>) &#8211; latitude/longitude in dec format</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">float(s): positive for N, E; negative for W, S</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<span class="target" id="module-misc.JSON"></span><div class="section" id="misc-json">
+<h2>misc.JSON<a class="headerlink" href="#misc-json" title="Permalink to this headline">¶</a></h2>
+<p>package contains routines for JSON file.</p>
+<dl class="function">
+<dt id="misc.JSON.json_show_Google_Maps">
+<code class="descclassname">misc.JSON.</code><code class="descname">json_show_Google_Maps</code><span class="sig-paren">(</span><em>infile</em>, <em>map_title</em>, <em>html_file</em>, <em>map_zoom</em>, <em>map_type</em>, <em>marker</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/JSON.html#json_show_Google_Maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.JSON.json_show_Google_Maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads radio network form JSON file and generates html file with nodes location.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>infile</strong> (<em>str</em>) &#8211; json file with network description</li>
+<li><strong>map_title</strong> (<em>str</em>) &#8211; title of the map</li>
+<li><strong>html_file</strong> (<em>str</em>) &#8211; html file name</li>
+<li><strong>map_zoom</strong> (<em>str</em>) &#8211; google maps zoom parameter</li>
+<li><strong>map_type</strong> (<em>str</em>) &#8211; type of the map: roadmap, satellite, hybrid, terrain</li>
+<li><strong>marker</strong> (<em>str</em>) &#8211; type of marker: o, s, x, a, f; colour of marker: r, g, b, k</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="misc.JSON.json_to_RaPlaTcsv">
+<code class="descclassname">misc.JSON.</code><code class="descname">json_to_RaPlaTcsv</code><span class="sig-paren">(</span><em>infile</em>, <em>outfile</em>, <em>radius</em>, <em>chan_param</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/JSON.html#json_to_RaPlaTcsv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.JSON.json_to_RaPlaTcsv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads json file and coverts it to the csv files for RaPlaT.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>infile</strong> (<em>str</em>) &#8211; input json file</li>
+<li><strong>outfile</strong> (<em>str</em>) &#8211; csv file names</li>
+<li><strong>radius</strong> (<em>str</em>) &#8211; calculation radius</li>
+<li><strong>chan_param</strong> (<em>str</em>) &#8211; channel parameters RaPlaT format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">antenna Id</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<span class="target" id="module-misc.iniProject"></span><div class="section" id="misc-iniproject">
+<h2>misc.iniProject<a class="headerlink" href="#misc-iniproject" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>initializes a set of project directories:</dt>
+<dd><ul class="first last simple">
+<li>projDir     directory</li>
+<li>dataDir:    data directry</li>
+<li>figDir:     figure directory</li>
+<li>progDir:    program directory</li>
+</ul>
+</dd>
+<dt>and data units, data types, google map types:</dt>
+<dd><ul class="first last simple">
+<li>Data_Units = [&#8220;m&#8221;, &#8220;km&#8221;, &#8220;s&#8221;, &#8220;ms&#8221;, &#8220;dBm&#8221;, &#8220;dBu&#8221;]</li>
+<li>Data_Types = [&#8220;RSSI&#8221;, &#8220;ToA&#8221;, &#8220;TDoA&#8221;, &#8220;Dist&#8221;]</li>
+<li>Google_Map_Types = [&#8220;roadmap&#8221;, &#8220;satellite&#8221;, &#8220;hybrid,&#8221;, &#8220;terrain&#8221;]</li>
+</ul>
+</dd>
+</dl>
+<dl class="function">
+<dt id="misc.iniProject.get_proj_dir">
+<code class="descclassname">misc.iniProject.</code><code class="descname">get_proj_dir</code><span class="sig-paren">(</span><em>N</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/iniProject.html#get_proj_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.iniProject.get_proj_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets N-th ancestor director of the project dir.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>N</strong> (<em>int</em>) &#8211; N-th ancestor directory: N = 0 project  dir</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">path to current working directory</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="misc.iniProject.iniDir">
+<code class="descclassname">misc.iniProject.</code><code class="descname">iniDir</code><span class="sig-paren">(</span><em>projDir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/misc/iniProject.html#iniDir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#misc.iniProject.iniDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>iniDir is used to specify directory structure of the project.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>projDir</strong> (<em>str</em>) &#8211; path to project directory</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to Localization Toolbox&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#exp-localization-00">Exp_Localization_00:</a><ul>
+<li><a class="reference internal" href="#experiment-objective">Experiment objective:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#re-radio-env">RE.Radio_Env</a></li>
+<li><a class="reference internal" href="#re-radio-net">RE.Radio_Net</a></li>
+<li><a class="reference internal" href="#raster-map">Raster_Map</a></li>
+<li><a class="reference internal" href="#measurement">Measurement</a></li>
+<li><a class="reference internal" href="#misc-gis">misc.GIS</a></li>
+<li><a class="reference internal" href="#misc-json">misc.JSON</a></li>
+<li><a class="reference internal" href="#misc-iniproject">misc.iniProject</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, T. Javornik.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,5 @@
+cellName,antID,antType,antEast,antNorth,antHeightAG,antDirection,antElecTilt,antMechTilt,freq,power,radius,model,P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11
+Node_9,9,ANT-868-CW-HW,460787,99907,6,0,0,0,868,0,10,ITUR1546-4,rural,50,,,,,,,,,
+Node_14,14,ANT-868-CW-HW,460727,99895,6.7,0,0,0,868,0,10,ITUR1546-4,rural,50,,,,,,,,,
+Node_17,17,ANT-868-CW-HW,460742,99865,5,0,0,0,868,0,10,ITUR1546-4,rural,50,,,,,,,,,
+Node_19,19,ANT-868-CW-HW,460761,99927,5.5,0,0,0,868,0,10,ITUR1546-4,rural,50,,,,,,,,,

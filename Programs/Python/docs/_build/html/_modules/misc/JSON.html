@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>misc.JSON &#8212; Localization Toolbox 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for misc.JSON</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    misc.JSON</span>
+<span class="sd">    =========</span>
+<span class="sd">    package contains routines for JSON file.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">misc.iniProject</span> <span class="k">as</span> <span class="nn">iniProject</span>
+<span class="kn">import</span> <span class="nn">GIS</span> <span class="k">as</span> <span class="nn">GIS</span>
+
+<div class="viewcode-block" id="json_to_RaPlaTcsv"><a class="viewcode-back" href="../../index.html#misc.JSON.json_to_RaPlaTcsv">[docs]</a><span class="k">def</span> <span class="nf">json_to_RaPlaTcsv</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">chan_param</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads json file and coverts it to the csv files for RaPlaT.</span>
+<span class="sd">    </span>
+<span class="sd">    :param str infile: input json file</span>
+<span class="sd">    :param str outfile: csv file names</span>
+<span class="sd">    :param str radius: calculation radius</span>
+<span class="sd">    :param str chan_param: channel parameters RaPlaT format</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: antenna Id</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="c1"># jhslhH  HKASDKFHKASHD </span>
+    <span class="n">Network</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">]</span>
+    <span class="n">HeaderLine</span> <span class="o">=</span> <span class="s2">&quot;cellName,antID,antType,antEast,antNorth,antHeightAG,&quot;</span>
+    <span class="n">HeaderLine</span> <span class="o">=</span> <span class="n">HeaderLine</span> <span class="o">+</span> <span class="s2">&quot;antDirection,antElecTilt,antMechTilt,freq,power,radius,&quot;</span>
+    <span class="n">HeaderLine</span> <span class="o">=</span> <span class="n">HeaderLine</span> <span class="o">+</span> <span class="s2">&quot;model,P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11&quot;</span>
+    <span class="n">HeaderLine_chan</span> <span class="o">=</span> <span class="s2">&quot;antID,powdBm,chNum,freq,bw,nmv,nodetype,comtype,antPolar&quot;</span>
+    <span class="n">filename</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
+    <span class="n">outfile_chan</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;chan&quot;</span> <span class="o">+</span> <span class="n">ext</span>
+
+    <span class="n">file_RaPlaT</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">file_RaPlaT</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">HeaderLine</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">file_RaPlaT_chan</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile_chan</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">file_RaPlaT_chan</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">HeaderLine_chan</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">ant_ID</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">Network</span><span class="p">:</span>
+        <span class="n">ant_ID</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+        <span class="c1"># Remove all non-word characters (everything except numbers and letters)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^\w\s]&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="c1"># Replace all runs of whitespace with a single dash</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">]</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;GK5&quot;</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]))</span>  <span class="o">-</span> <span class="mi">5000000</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]))</span> <span class="o">-</span> <span class="mi">5000000</span>
+        <span class="n">alt</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;altitude&quot;</span><span class="p">]</span>
+
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="s2">&quot;experimental_network&quot;</span><span class="p">]</span>
+        <span class="n">pow_dBm</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;output_pwr_dbm&quot;</span><span class="p">]</span>
+        <span class="n">freq_MHz</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;frequency&quot;</span><span class="p">]</span>
+        <span class="n">ant_type</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;antenna_type&quot;</span><span class="p">]</span>
+        <span class="n">strRaPlaT</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ant_ID</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ant_type</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
+        <span class="n">strRaPlaT</span> <span class="o">=</span> <span class="n">strRaPlaT</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
+        <span class="n">strRaPlaT</span> <span class="o">=</span> <span class="n">strRaPlaT</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
+        <span class="n">strRaPlaT</span> <span class="o">=</span> <span class="n">strRaPlaT</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq_MHz</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pow_dBm</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
+        <span class="n">strRaPlaT</span> <span class="o">=</span> <span class="n">strRaPlaT</span> <span class="o">+</span> <span class="n">chan_param</span>
+
+        <span class="n">strRaPlaT_chan</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ant_ID</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pow_dBm</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">freq_MHz</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
+        <span class="n">strRaPlaT_chan</span> <span class="o">=</span> <span class="n">strRaPlaT_chan</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">file_RaPlaT</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">strRaPlaT</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">file_RaPlaT_chan</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">strRaPlaT_chan</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">file_RaPlaT</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">file_RaPlaT_chan</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">ant_ID</span></div>
+
+
+<div class="viewcode-block" id="json_show_Google_Maps"><a class="viewcode-back" href="../../index.html#misc.JSON.json_show_Google_Maps">[docs]</a><span class="k">def</span> <span class="nf">json_show_Google_Maps</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">map_title</span><span class="p">,</span> <span class="n">html_file</span><span class="p">,</span> <span class="n">map_zoom</span><span class="p">,</span> <span class="n">map_type</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads radio network form JSON file and generates html file with nodes location.</span>
+
+<span class="sd">    :param str infile: json file with network description</span>
+<span class="sd">    :param str map_title: title of the map</span>
+<span class="sd">    :param str html_file: html file name</span>
+<span class="sd">    :param str map_zoom: google maps zoom parameter</span>
+<span class="sd">    :param str map_type: type of the map: roadmap, satellite, hybrid, terrain</span>
+<span class="sd">    :param str marker: type of marker: o, s, x, a, f; colour of marker: r, g, b, k</span>
+
+<span class="sd">    :returns:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="n">Network</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">]</span>
+
+    <span class="n">ant_ID</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">Network</span><span class="p">:</span>
+        <span class="n">ant_ID</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+        <span class="c1"># Remove all non-word characters (everything except numbers and letters)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^\w\s]&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="c1"># Replace all runs of whitespace with a single dash</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">]</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;GPS&quot;</span><span class="p">]</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">]</span>
+        <span class="n">lng</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="s2">&quot;lng&quot;</span><span class="p">]</span>
+        <span class="n">alt</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;altitude&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">ant_ID</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">map</span> <span class="o">=</span> <span class="n">GIS</span><span class="o">.</span><span class="n">google_map</span><span class="p">(</span><span class="n">map_title</span><span class="p">,</span> <span class="n">html_file</span><span class="p">,</span> <span class="p">[</span><span class="n">lat</span><span class="p">,</span> <span class="n">lng</span><span class="p">],</span> <span class="n">map_zoom</span><span class="p">,</span> <span class="n">map_type</span><span class="p">)</span>
+        <span class="nb">map</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">[</span><span class="n">lat</span><span class="p">,</span> <span class="n">lng</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">marker</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">***********************************&quot;</span>
+    <span class="nb">print</span> <span class="s2">&quot;*  JSON read/parse files test     *&quot;</span>
+    <span class="nb">print</span> <span class="s2">&quot;*************************************</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="p">[</span><span class="n">path</span><span class="p">,</span> <span class="n">tail</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">projDir</span> <span class="o">=</span> <span class="n">iniProject</span><span class="o">.</span><span class="n">iniDir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="n">infile</span> <span class="o">=</span> <span class="s2">&quot;Log-a-Tec_2_JSI.json&quot;</span>
+    <span class="n">outfile</span> <span class="o">=</span> <span class="s2">&quot;Log-a-Tec_2_JSI.csv&quot;</span>
+
+    <span class="n">infile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">projDir</span><span class="p">[</span><span class="s2">&quot;json&quot;</span><span class="p">],</span> <span class="n">infile</span><span class="p">)</span>
+    <span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">projDir</span><span class="p">[</span><span class="s2">&quot;csv&quot;</span><span class="p">],</span> <span class="n">outfile</span><span class="p">)</span>
+
+    <span class="n">json_show_Google_Maps</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="s2">&quot;LOG-a-TEC-IJS&quot;</span><span class="p">,</span> <span class="s2">&quot;bla.html&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;road&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
+
+    <span class="n">radius</span> <span class="o">=</span> <span class="s2">&quot;10&quot;</span>
+    <span class="n">chan_param</span> <span class="o">=</span> <span class="s2">&quot;ITUR1546-4,rural,50,,,,,,,,,&quot;</span>
+
+    <span class="n">num_cells</span> <span class="o">=</span> <span class="n">json_to_RaPlaTcsv</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">chan_param</span><span class="p">)</span>
+    <span class="nb">print</span> <span class="s2">&quot;Number of cells added in file: &quot;</span><span class="p">,</span> <span class="n">num_cells</span>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, T. Javornik.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

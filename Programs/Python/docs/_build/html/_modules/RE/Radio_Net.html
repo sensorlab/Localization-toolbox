@@ -1,0 +1,1313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>RE.Radio_Net &#8212; Localization Toolbox 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for RE.Radio_Net</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    RE.Radio_Net</span>
+<span class="sd">    ============</span>
+<span class="sd">    package contains node and network class.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">pyplot</span>
+<span class="kn">import</span> <span class="nn">misc.iniProject</span> <span class="k">as</span> <span class="nn">iniProject</span>
+<span class="kn">import</span> <span class="nn">misc.GIS</span>
+<span class="kn">import</span> <span class="nn">RE.Raster_Map</span> <span class="k">as</span> <span class="nn">Raster_Map</span>
+
+<span class="n">ErrorStr</span> <span class="o">=</span> <span class="s2">&quot;--- ERROR: &quot;</span>
+<span class="n">WarningStr</span> <span class="o">=</span> <span class="s2">&quot;--- Warning: &quot;</span>
+
+<div class="viewcode-block" id="to_num"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.to_num">[docs]</a><span class="k">def</span> <span class="nf">to_num</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts string to number.</span>
+
+<span class="sd">    :param str x: string to convert</span>
+
+<span class="sd">    :returns: number</span>
+<span class="sd">    :rtype: number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;Input is not a number!  &quot;</span> <span class="o">+</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="to_str"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.to_str">[docs]</a><span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts number to sting.</span>
+
+<span class="sd">    :param float x: number</span>
+
+<span class="sd">    :returns: string of x</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="RSSI_to_dist"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RSSI_to_dist">[docs]</a><span class="k">def</span> <span class="nf">RSSI_to_dist</span><span class="p">(</span><span class="n">RSSI_dBm</span><span class="p">,</span> <span class="n">fc_MHz</span><span class="p">,</span> <span class="n">tx_pow_dBm</span><span class="p">,</span> <span class="n">pl_coef</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts measured RSSI level to the distance using FSPL channel model.</span>
+
+<span class="sd">    :param float RSSI_dBm: RSSI value in [dBm]</span>
+<span class="sd">    :param float fc_MHz: carrier frequency in [MHZ]</span>
+<span class="sd">    :param float tx_pow_dBm: transmit power in [dBm]</span>
+<span class="sd">    :param float pl_coef: path loss coefficient</span>
+
+<span class="sd">    :returns: distance in [m]</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tx_pow_dBm</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">RSSI_dBm</span><span class="p">)</span> <span class="o">-</span> <span class="mf">20.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">fc_MHz</span><span class="p">))</span> <span class="o">+</span> <span class="mf">27.55</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">x</span><span class="o">/</span><span class="mf">10.0</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">pl_coef</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">dist</span></div>
+
+
+<div class="viewcode-block" id="RadioNode"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode">[docs]</a><span class="k">class</span> <span class="nc">RadioNode</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Defines RadioNode class.**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot; In Radio Node! At least Node Id has to be specified!&quot;</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Id</span> <span class="o">=</span> <span class="kc">None</span>                  <span class="c1"># node ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Name</span> <span class="o">=</span> <span class="kc">None</span>                <span class="c1"># node Name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>   <span class="c1"># radio node location [x, y, Antenna Above ground level]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="c1"># Lat, Long, Altitude above see level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PowdBm</span> <span class="o">=</span> <span class="kc">None</span>              <span class="c1"># Transmit power in dBm if Tx, Rx power in dBm if Rx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FcMHz</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># Carrier frequency in MHz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">BwMHz</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># Channel bandwidth in MHz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Chan</span> <span class="o">=</span> <span class="kc">None</span>                <span class="c1"># Logical channel number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AntType</span> <span class="o">=</span> <span class="kc">None</span>             <span class="c1"># Antenna name of msi diagram</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AntAzimuth</span> <span class="o">=</span> <span class="kc">None</span>          <span class="c1"># Antenna azimuth in degrees</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AntTilt</span> <span class="o">=</span> <span class="kc">None</span>             <span class="c1"># Antenna tilt in degrees +down, -up</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Range</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># if &#39;0&#39; fixed station, if ~&#39;0&#39;: mobile station</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TxRx</span> <span class="o">=</span> <span class="kc">None</span>                <span class="c1"># Transmission type S = simplex, D = duplex</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">ArgList</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)):</span>
+                <span class="n">ArgList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">NumArgs</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># Node Id</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">ArgList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;Id&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Id</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="n">NumArgs</span> <span class="o">=</span> <span class="n">NumArgs</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="c1"># Radio Node location [xyz]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">ArgList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;Loc&#39;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">to_num</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="n">to_num</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">])</span>
+                    <span class="n">z</span> <span class="o">=</span> <span class="n">to_num</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">])</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;Check location coordinate! &quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_str</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_str</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_str</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+                <span class="n">Lat</span><span class="p">,</span> <span class="n">Long</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">GIS</span><span class="o">.</span><span class="n">GKtoWGS84</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_str</span><span class="p">(</span><span class="n">Lat</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_str</span><span class="p">(</span><span class="n">Long</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">NumArgs</span> <span class="o">=</span> <span class="n">NumArgs</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="c1"># Radio Node location [WGS84]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">ArgList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;WGS84&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">Lat</span> <span class="o">=</span> <span class="n">to_num</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                    <span class="n">Long</span> <span class="o">=</span> <span class="n">to_num</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">])</span>
+                    <span class="n">Alt</span> <span class="o">=</span> <span class="n">to_num</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">])</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;Check location coordinate! &quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_str</span><span class="p">(</span><span class="n">Lat</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_str</span><span class="p">(</span><span class="n">Long</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_str</span><span class="p">(</span><span class="n">Alt</span><span class="p">))</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">GIS</span><span class="o">.</span><span class="n">WGS84toGK</span><span class="p">(</span><span class="n">Lat</span><span class="p">,</span> <span class="n">Long</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_str</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_str</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_str</span><span class="p">(</span><span class="n">Alt</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                <span class="n">NumArgs</span> <span class="o">=</span> <span class="n">NumArgs</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="c1"># Transmission bandwidth in MHz BwMHz</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">ArgList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;BwMHz&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">BwMHz</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="n">NumArgs</span> <span class="o">=</span> <span class="n">NumArgs</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="c1"># Carrier frequency in MHz</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">ArgList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;FcMHz&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">FcMHz</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="n">NumArgs</span> <span class="o">=</span> <span class="n">NumArgs</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="c1"># Power in dBm</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">ArgList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;PowdBm&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">PowdBm</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="n">NumArgs</span> <span class="o">=</span> <span class="n">NumArgs</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="c1"># Antenna type</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">ArgList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;Antenna&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">AntType</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="n">NumArgs</span> <span class="o">=</span> <span class="n">NumArgs</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="c1"># Antenna azimuth</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">ArgList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;AntAzimuth&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">AntAzimuth</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="n">NumArgs</span> <span class="o">=</span> <span class="n">NumArgs</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="c1"># Antenna tilt</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">ArgList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;AntTilt&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">AntTilt</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="n">NumArgs</span> <span class="o">=</span> <span class="n">NumArgs</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="c1"># Node Range</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">ArgList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;Range&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Range</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="n">NumArgs</span> <span class="o">=</span> <span class="n">NumArgs</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="c1"># Node Function</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">ArgList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;TxRx&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">TxRx</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="n">NumArgs</span> <span class="o">=</span> <span class="n">NumArgs</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="k">if</span> <span class="n">NumArgs</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;In Radio Node! Argument error!&quot;</span>
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="RadioNode.get_Id"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_Id">[docs]</a>    <span class="k">def</span> <span class="nf">get_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: Node Id</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Id</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RadioNode.get_Name"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_Name">[docs]</a>    <span class="k">def</span> <span class="nf">get_Name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: node name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Name</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RadioNode.set_Name"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.set_Name">[docs]</a>    <span class="k">def</span> <span class="nf">set_Name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets node name.</span>
+
+<span class="sd">        :param Name: node Name</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Name</span> <span class="o">=</span> <span class="n">Name</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.get_Loc"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_Loc">[docs]</a>    <span class="k">def</span> <span class="nf">get_Loc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: node location</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RadioNode.to_WGS84"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.to_WGS84">[docs]</a>    <span class="k">def</span> <span class="nf">to_WGS84</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates lat, long from Guass Kreuger coordinates</span>
+<span class="sd">        and set it in self.WGS84.</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">xlat</span><span class="p">,</span> <span class="n">xlong</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">GIS</span><span class="o">.</span><span class="n">GKtoWGS84</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">xlat</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">xlong</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-100&quot;</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="n">WarningStr</span> <span class="o">+</span> <span class="s2">&quot;Lat, Long and altitide not set!&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.get_WGS84"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_WGS84">[docs]</a>    <span class="k">def</span> <span class="nf">get_WGS84</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: node location in WGS84 format [lat, long, altitude above see level]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_WGS84</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">WarningStr</span> <span class="o">+</span> <span class="s2">&quot;WGS84 coordinate not returned!&quot;</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RadioNode.get_LatLong"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_LatLong">[docs]</a>    <span class="k">def</span> <span class="nf">get_LatLong</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: node location in WGS84 format lat, long</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_WGS84</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">WarningStr</span> <span class="o">+</span> <span class="s2">&quot;WGS84 coordinate not returned!&quot;</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RadioNode.get_Alt"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_Alt">[docs]</a>    <span class="k">def</span> <span class="nf">get_Alt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: altitude above see level in [m]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RadioNode.get_Z"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_Z">[docs]</a>    <span class="k">def</span> <span class="nf">get_Z</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: altitude above ground level in [m]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RadioNode.get_AntAvgl"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_AntAvgl">[docs]</a>    <span class="k">def</span> <span class="nf">get_AntAvgl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: altitude above ground level in [m]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_Z</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RadioNode.set_Loc"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.set_Loc">[docs]</a>    <span class="k">def</span> <span class="nf">set_Loc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets node location.</span>
+
+<span class="sd">        :param loc: location in [x, y, z] format</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">loc</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">to_num</span><span class="p">(</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">to_num</span><span class="p">(</span><span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">xlat</span><span class="p">,</span> <span class="n">xlong</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">GIS</span><span class="o">.</span><span class="n">GKtoWGS84</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">xlat</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">xlong</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;In Radio Node! Argument error!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.set_LatLong"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.set_LatLong">[docs]</a>    <span class="k">def</span> <span class="nf">set_LatLong</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xlat</span><span class="p">,</span> <span class="n">xlong</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets node location in WGS 84 format.</span>
+
+<span class="sd">        :param xlat: latitude in WGS84 dec format</span>
+<span class="sd">        :param xlong: longitude in WGS84 dec format</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">xlat</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">xlong</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">GIS</span><span class="o">.</span><span class="n">WGS84toGK</span><span class="p">(</span><span class="n">to_num</span><span class="p">(</span><span class="n">xlat</span><span class="p">),</span> <span class="n">to_num</span><span class="p">(</span><span class="n">xlong</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.set_Alt"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.set_Alt">[docs]</a>    <span class="k">def</span> <span class="nf">set_Alt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets alititude above the see level in [m].</span>
+
+<span class="sd">        :param alt: altitude in [m]</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">WarningStr</span> <span class="o">+</span> <span class="s2">&quot;Altitude not set!&quot;</span></div>
+
+<div class="viewcode-block" id="RadioNode.set_XY"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.set_XY">[docs]</a>    <span class="k">def</span> <span class="nf">set_XY</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets node location.</span>
+
+<span class="sd">        :param x: node x (east - west)</span>
+<span class="sd">        :param y: node y (south - north)</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLoc</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_WGS84</span><span class="p">()</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.set_AntAvgl"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.set_AntAvgl">[docs]</a>    <span class="k">def</span> <span class="nf">set_AntAvgl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets node altitude above the ground level.</span>
+
+<span class="sd">        :param alt:</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">WarningStr</span> <span class="o">+</span> <span class="s2">&quot;Antenna altitude above ground level not set!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.set_Z"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.set_Z">[docs]</a>    <span class="k">def</span> <span class="nf">set_Z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets node altitude above the ground level.</span>
+
+<span class="sd">        :param alt:</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setAntAvgl</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.get_BwMHz"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_BwMHz">[docs]</a>    <span class="k">def</span> <span class="nf">get_BwMHz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: node bandwidth in MHz</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getBwMHz</span></div>
+
+<div class="viewcode-block" id="RadioNode.get_FcMHz"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_FcMHz">[docs]</a>    <span class="k">def</span> <span class="nf">get_FcMHz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: node carrier frequency in MHz</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">FcMHz</span></div>
+
+<div class="viewcode-block" id="RadioNode.get_PowdBm"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_PowdBm">[docs]</a>    <span class="k">def</span> <span class="nf">get_PowdBm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: transmit power in dBm if Tx, Rx power in dBm if Rx</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PowdBm</span></div>
+
+<div class="viewcode-block" id="RadioNode.get_AntType"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_AntType">[docs]</a>    <span class="k">def</span> <span class="nf">get_AntType</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: antenna type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">AntType</span></div>
+
+<div class="viewcode-block" id="RadioNode.get_AntAzimuth"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_AntAzimuth">[docs]</a>    <span class="k">def</span> <span class="nf">get_AntAzimuth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: antenna azimuth in degrees</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">AntAzimuth</span></div>
+
+<div class="viewcode-block" id="RadioNode.get_AntTilt"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.get_AntTilt">[docs]</a>    <span class="k">def</span> <span class="nf">get_AntTilt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: antenna tilt in degrees</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">AntTilt</span></div>
+
+<div class="viewcode-block" id="RadioNode.set_BwMHz"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.set_BwMHz">[docs]</a>    <span class="k">def</span> <span class="nf">set_BwMHz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets node frequency bandwidth in MHz.</span>
+
+<span class="sd">        :param bw: frequency bandwidth in MHz</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">BwMHz</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">bw</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;Bandwidth not set!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.set_FcMHz"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.set_FcMHz">[docs]</a>    <span class="k">def</span> <span class="nf">set_FcMHz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets carrier frequency.</span>
+
+<span class="sd">        :param fc: carrier frequency in MHz</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FcMHz</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">fc</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">WarningStr</span> <span class="o">+</span> <span class="s2">&quot;Carrier frequency not set!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.set_PowdBm"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.set_PowdBm">[docs]</a>    <span class="k">def</span> <span class="nf">set_PowdBm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets Rx or Tx power in dBm.</span>
+
+<span class="sd">        :param p: power in dBm</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">PowdBm</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">WarningStr</span> <span class="o">+</span> <span class="s2">&quot;Tx/Rx power not set!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.set_AntType"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.set_AntType">[docs]</a>    <span class="k">def</span> <span class="nf">set_AntType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ant</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets antenna type.</span>
+
+<span class="sd">        :param ant: antenna type</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AntType</span> <span class="o">=</span> <span class="n">to_str</span><span class="p">(</span><span class="n">ant</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">WarningStr</span> <span class="o">+</span>  <span class="s2">&quot;Antenna type power not set!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.set_AntAzimuth"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.set_AntAzimuth">[docs]</a>    <span class="k">def</span> <span class="nf">set_AntAzimuth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets antenna azimuth in degrees.</span>
+
+<span class="sd">        :param azimuth: antenna azimuth in degreee</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AntAzimuth</span> <span class="o">=</span> <span class="n">azimuth</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">WarningStr</span> <span class="o">+</span> <span class="s2">&quot;Antenna azimuth not set!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.set_AntTilt"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.set_AntTilt">[docs]</a>    <span class="k">def</span> <span class="nf">set_AntTilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tilt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets antenna tilt.</span>
+
+<span class="sd">        :param tilt: antenna tilt in degrees</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AntTilt</span> <span class="o">=</span> <span class="n">tilt</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">WarningStr</span> <span class="o">+</span> <span class="s2">&quot;Antenna tilt not set!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.print_node"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.print_node">[docs]</a>    <span class="k">def</span> <span class="nf">print_node</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints node configuration.</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;   Radio Node ID: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Id</span>
+        <span class="nb">print</span> <span class="s2">&quot;      Lat, Long, Alt:             [&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">WGS84</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;]&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;      x, y, Avgl:                 [&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;]&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;      Bw, fc[MHz], P[dBm]:        [&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">BwMHz</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">FcMHz</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PowdBm</span><span class="p">,</span> <span class="s2">&quot;]&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;      Antenna Type, Azim, Tilt:   [&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">AntType</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">AntAzimuth</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">AntTilt</span><span class="p">,</span> <span class="s2">&quot;]&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.est_loc_LS"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.est_loc_LS">[docs]</a>    <span class="k">def</span> <span class="nf">est_loc_LS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radio_env</span><span class="p">,</span> <span class="n">Measurements_Id</span><span class="p">,</span> <span class="n">Anchors_Id</span><span class="p">,</span> <span class="n">Mobiles_Id</span><span class="p">,</span> <span class="n">pl_coef</span><span class="p">,</span> <span class="n">ref_anchor_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method estimates the location of  node using least square method.</span>
+
+<span class="sd">        :param radio_env: radio environment</span>
+<span class="sd">        :param Measurements_Id: Id of measurements</span>
+<span class="sd">        :param Anchors_Id: Id of Anchor network</span>
+<span class="sd">        :param Mobiles_Id: Id of Mobile network</span>
+<span class="sd">        :param pl_coef: Id of path loss coefficient</span>
+<span class="sd">        :param ref_anchor_index: index of reference Anchor node</span>
+
+<span class="sd">        :returns: location x, y, z coordinate of the node</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#    ki = xi^2 + yi^2 + zi^2</span>
+        <span class="c1">#    | x1-x0, y1-y0, z1-z0 |      | d0^2 - d1^2 - k0 + k1 |       | x |</span>
+        <span class="c1">#A = | x2-x0, y2-y0, z2-z0 |  B = | d0^2 - d2^2 - k0 + k2 |   r = | y |</span>
+        <span class="c1">#    | x3-x0, y3-y0, z3-z0 |      | d0^2 - d3^2 - k0 + k3 |       | z |</span>
+        <span class="c1">#ki = xi^2 + yi^2 + zi^2</span>
+        <span class="c1">#r = (A^T * A)^-1 * A^T * b /2</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>         <span class="c1"># measured values</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="p">[]</span>          <span class="c1"># type of values</span>
+        <span class="n">Tx_Pow_dBm</span> <span class="o">=</span> <span class="p">[]</span>     <span class="c1"># transmit power value in dBm</span>
+        <span class="n">Loc</span> <span class="o">=</span> <span class="p">[]</span>            <span class="c1"># location of Anchor nodes</span>
+        <span class="n">Freq</span> <span class="o">=</span> <span class="p">[]</span>           <span class="c1"># Tx frequency in MHz</span>
+
+        <span class="n">anchors</span> <span class="o">=</span> <span class="n">radio_env</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Network&quot;</span><span class="p">,</span> <span class="n">Anchors_Id</span><span class="p">)</span>
+        <span class="n">measurs</span> <span class="o">=</span> <span class="n">radio_env</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Measurements&quot;</span><span class="p">,</span> <span class="n">Measurements_Id</span><span class="p">)</span>
+        <span class="n">tx_node_Ids</span> <span class="o">=</span> <span class="n">anchors</span><span class="o">.</span><span class="n">get_RadioNode_Ids</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">tx_node_Id</span> <span class="ow">in</span> <span class="n">tx_node_Ids</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">measurs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Anchors_Id</span><span class="p">,</span> <span class="n">tx_node_Id</span><span class="p">,</span> <span class="n">Mobiles_Id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Id</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get_Value</span><span class="p">())</span>
+                <span class="n">types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get_Type</span><span class="p">())</span>
+                <span class="n">loc</span> <span class="o">=</span> <span class="n">anchors</span><span class="o">.</span><span class="n">get_RadioNode_Loc</span><span class="p">(</span><span class="n">tx_node_Id</span><span class="p">)</span>
+                <span class="n">Loc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+                <span class="n">fc_MHz</span> <span class="o">=</span> <span class="n">anchors</span><span class="o">.</span><span class="n">get_RadioNode_FcMHz</span><span class="p">(</span><span class="n">tx_node_Id</span><span class="p">)</span>
+                <span class="n">Freq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fc_MHz</span><span class="p">)</span>
+                <span class="nb">pow</span> <span class="o">=</span> <span class="n">anchors</span><span class="o">.</span><span class="n">get_RadioNode_PowdBm</span><span class="p">(</span><span class="n">tx_node_Id</span><span class="p">)</span>
+                <span class="n">Tx_Pow_dBm</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">pow</span><span class="p">)</span>
+        <span class="n">Loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Loc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">fc</span><span class="p">,</span> <span class="nb">pow</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">Freq</span><span class="p">,</span> <span class="n">Tx_Pow_dBm</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;RSSI&quot;</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">RSSI_to_dist</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fc</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="n">pl_coef</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;Dist&quot;</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;ToA&quot;</span> <span class="ow">or</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;TDoA&quot;</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">3.0e08</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot; Wrong type of measurement &quot;</span> <span class="o">+</span> <span class="n">typ</span>
+                <span class="k">return</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+        <span class="n">Loc_0</span> <span class="o">=</span> <span class="n">Loc</span><span class="p">[</span><span class="n">ref_anchor_index</span><span class="p">]</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">Loc</span><span class="p">,</span> <span class="n">ref_anchor_index</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">Loc_0</span>
+
+        <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Loc</span> <span class="o">*</span> <span class="n">Loc</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">D</span> <span class="o">*</span> <span class="n">D</span>
+        <span class="n">D_0</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">ref_anchor_index</span><span class="p">]</span>
+        <span class="n">K_0</span> <span class="o">=</span> <span class="n">K</span><span class="p">[</span><span class="n">ref_anchor_index</span><span class="p">]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">ref_anchor_index</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">ref_anchor_index</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">K_0</span> <span class="o">+</span> <span class="n">D_0</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">A</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span> <span class="o">=</span> <span class="n">out</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNode.est_loc_FP"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNode.est_loc_FP">[docs]</a>    <span class="k">def</span> <span class="nf">est_loc_FP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radio_env</span><span class="p">,</span> <span class="n">Measurements_Id</span><span class="p">,</span> <span class="n">Anchors_Id</span><span class="p">,</span> <span class="n">Mobiles_Id</span><span class="p">,</span> <span class="n">pl_coef</span><span class="p">,</span> <span class="n">ref_anchor_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This is method returns a location of node using fingerprint method.</span>
+
+<span class="sd">        :param radio_env: radio environment</span>
+<span class="sd">        :param Measurements_Id: Id of measurements</span>
+<span class="sd">        :param Anchors_Id: Id of Anchor network</span>
+<span class="sd">        :param Mobiles_Id: Id of Mobile network</span>
+<span class="sd">        :param pl_coef: Id of path loss coefficient</span>
+<span class="sd">        :param ref_anchor_index: index of reference Anchor node</span>
+
+<span class="sd">        :returns: location x, y, z coordinates of node</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># find finger print from measurements</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>         <span class="c1"># measured values</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="p">[]</span>          <span class="c1"># type of values</span>
+        <span class="n">anchors</span> <span class="o">=</span> <span class="n">radio_env</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Network&quot;</span><span class="p">,</span> <span class="n">Anchors_Id</span><span class="p">)</span>
+        <span class="n">measurs</span> <span class="o">=</span> <span class="n">radio_env</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Measurements&quot;</span><span class="p">,</span> <span class="n">Measurements_Id</span><span class="p">)</span>
+        <span class="n">tx_node_Ids</span> <span class="o">=</span> <span class="n">anchors</span><span class="o">.</span><span class="n">get_RadioNode_Ids</span><span class="p">()</span>
+
+        <span class="n">finger_print</span> <span class="o">=</span> <span class="p">[]</span>   <span class="c1"># finger print</span>
+        <span class="k">for</span> <span class="n">tx_node_Id</span> <span class="ow">in</span> <span class="n">tx_node_Ids</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">measurs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Anchors_Id</span><span class="p">,</span> <span class="n">tx_node_Id</span><span class="p">,</span> <span class="n">Mobiles_Id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Id</span><span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">get_Type</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;RSSI&quot;</span><span class="p">:</span>
+                    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get_Value</span><span class="p">())</span>
+            <span class="n">finger_print</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
+
+        <span class="n">RSSI_maps</span> <span class="o">=</span> <span class="n">radio_env</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Raster Map&quot;</span><span class="p">,</span> <span class="s1">&#39;RSSI maps&#39;</span><span class="p">)</span>
+        <span class="n">Region</span> <span class="o">=</span> <span class="n">RSSI_maps</span><span class="o">.</span><span class="n">get_Region</span><span class="p">()</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">Region</span><span class="o">.</span><span class="n">generate_xy_mesh</span><span class="p">()</span>
+
+        <span class="n">dist_min</span> <span class="o">=</span> <span class="mf">999999.00</span>
+        <span class="n">x_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">y_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="k">for</span> <span class="n">x_lin</span><span class="p">,</span> <span class="n">y_lin</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_lin</span><span class="p">,</span> <span class="n">y_lin</span><span class="p">):</span>
+                <span class="n">Values</span> <span class="o">=</span> <span class="n">RSSI_maps</span><span class="o">.</span><span class="n">get_Values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">finger_print</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;</span> <span class="n">dist_min</span><span class="p">:</span>
+                    <span class="n">dist_min</span> <span class="o">=</span> <span class="n">dist</span>
+                    <span class="n">x_min</span> <span class="o">=</span> <span class="n">x</span>
+                    <span class="n">y_min</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Loc</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_min</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span></div></div>
+
+
+<div class="viewcode-block" id="RadioNetwork"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork">[docs]</a><span class="k">class</span> <span class="nc">RadioNetwork</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Defines radio network class:**</span>
+<span class="sd">    a set or radio nodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Id</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># add empty nodes</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">RadioNode</span><span class="p">(</span><span class="s2">&quot;Id&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">append_RadioNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="RadioNetwork.est_loc_LS"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.est_loc_LS">[docs]</a>    <span class="k">def</span> <span class="nf">est_loc_LS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radio_env</span><span class="p">,</span> <span class="n">Measurements_Id</span><span class="p">,</span> <span class="n">Anchors_Id</span><span class="p">,</span> <span class="n">pl_exp</span><span class="p">,</span> <span class="n">ref_anchor_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Estimates locations of nodes in radio network applying least square method.</span>
+
+<span class="sd">        :param radio_env: radio environment</span>
+<span class="sd">        :param Measurements_Id: id of measurements</span>
+<span class="sd">        :param Anchors_Id: id of anchor network</span>
+<span class="sd">        :param pl_exp: pathloss exponent</span>
+<span class="sd">        :param ref_anchor_index: reference anchor  index</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">est_loc_LS</span><span class="p">(</span><span class="n">radio_env</span><span class="p">,</span> <span class="n">Measurements_Id</span><span class="p">,</span> <span class="n">Anchors_Id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Id</span><span class="p">,</span> <span class="n">pl_exp</span><span class="p">,</span> <span class="n">ref_anchor_index</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.est_loc_FP"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.est_loc_FP">[docs]</a>    <span class="k">def</span> <span class="nf">est_loc_FP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radio_env</span><span class="p">,</span> <span class="n">Measurements_Id</span><span class="p">,</span> <span class="n">Anchors_Id</span><span class="p">,</span> <span class="n">pl_exp</span><span class="p">,</span> <span class="n">ref_anchor_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Estimate locations of nodes in radio network applying finger printing method.</span>
+
+<span class="sd">        :param radio_env: radio environment</span>
+<span class="sd">        :param Measurements_Id: id of measurements</span>
+<span class="sd">        :param Anchors_Id: id of anchor network</span>
+<span class="sd">        :param pl_exp: pathloss exponent</span>
+<span class="sd">        :param ref_anchor_index: reference anchor  index</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">est_loc_FP</span><span class="p">(</span><span class="n">radio_env</span><span class="p">,</span> <span class="n">Measurements_Id</span><span class="p">,</span> <span class="n">Anchors_Id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Id</span><span class="p">,</span> <span class="n">pl_exp</span><span class="p">,</span> <span class="n">ref_anchor_index</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.loc_error"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.loc_error">[docs]</a>    <span class="k">def</span> <span class="nf">loc_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref_network</span><span class="p">,</span> <span class="n">plothist</span><span class="p">,</span> <span class="n">D3</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Esitmates location error between refence network and radio network.</span>
+
+<span class="sd">        :param ref_network: reference network</span>
+<span class="sd">        :param plothist: flag for printng error histogram</span>
+<span class="sd">        :param D3: flag to estimate error in three dimensions</span>
+
+<span class="sd">        :returns: [mean, median, error standard deivation]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Error</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ref_nodes</span> <span class="o">=</span> <span class="n">ref_network</span><span class="o">.</span><span class="n">get_RadioNodes</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">node_ref</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">,</span> <span class="n">ref_nodes</span><span class="p">):</span>
+            <span class="n">Loc</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_Loc</span><span class="p">()</span>
+            <span class="n">Loc_ref</span> <span class="o">=</span> <span class="n">node_ref</span><span class="o">.</span><span class="n">get_Loc</span><span class="p">()</span>
+            <span class="n">Delta_Loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Loc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Loc_ref</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">Delta_Loc</span> <span class="o">=</span> <span class="n">Delta_Loc</span> <span class="o">*</span> <span class="n">Delta_Loc</span>
+            <span class="n">Error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Delta_Loc</span><span class="p">)</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">Error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Error</span><span class="p">)</span>
+
+        <span class="n">dist_Error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Error</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">Error</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">D3</span><span class="p">:</span>
+            <span class="n">dist_Error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Error</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">Error</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">Error</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="p">)</span>
+
+        <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">---------------------------------------------------&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;     Mean distance error =   &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dist_Error</span><span class="p">))</span>
+        <span class="nb">print</span> <span class="s2">&quot;     Medina distance error = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">dist_Error</span><span class="p">))</span>
+        <span class="nb">print</span> <span class="s2">&quot;     Std. deviation error =  &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dist_Error</span><span class="p">))</span>
+        <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">---------------------------------------------------&quot;</span>
+
+        <span class="k">if</span> <span class="n">plothist</span><span class="p">:</span>
+            <span class="n">num_bins</span> <span class="o">=</span> <span class="mi">20</span>
+            <span class="n">n</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">patches</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">dist_Error</span><span class="p">,</span> <span class="n">num_bins</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dist_Error</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">dist_Error</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dist_Error</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.set_Id"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.set_Id">[docs]</a>    <span class="k">def</span> <span class="nf">set_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets network Id</span>
+
+<span class="sd">        :param str Id: network id</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Id</span> <span class="o">=</span> <span class="n">Id</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.get_Id"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.get_Id">[docs]</a>    <span class="k">def</span> <span class="nf">get_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: network Id</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Id</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.get_RadioNodes"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.get_RadioNodes">[docs]</a>    <span class="k">def</span> <span class="nf">get_RadioNodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: list of network Ids</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.get_RadioNode_Index"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.get_RadioNode_Index">[docs]</a>    <span class="k">def</span> <span class="nf">get_RadioNode_Index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NodeId</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns radio node index</span>
+
+<span class="sd">        :param NodeId: Id of radio node</span>
+
+<span class="sd">        :returns: RadioNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">NodeId</span> <span class="o">==</span> <span class="n">node</span><span class="o">.</span><span class="n">get_Id</span><span class="p">()):</span>
+                <span class="k">return</span> <span class="n">idx</span>
+        <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;In Radio Network! No node &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">NodeId</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; found!&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.get_Len"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.get_Len">[docs]</a>    <span class="k">def</span> <span class="nf">get_Len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: number of nodes in radio network</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.print_Net"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.print_Net">[docs]</a>    <span class="k">def</span> <span class="nf">print_Net</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints the radio nodes on console.</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;   Radio network:&quot;</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">Print</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.get_RadioNode"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.get_RadioNode">[docs]</a>    <span class="k">def</span> <span class="nf">get_RadioNode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NodeId</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns RadioNode with NodeId.</span>
+
+<span class="sd">        :param NodeId: Id of radion node</span>
+<span class="sd">        :returns: RadioNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">NodeId</span> <span class="o">==</span> <span class="n">node</span><span class="o">.</span><span class="n">get_Id</span><span class="p">()):</span>
+                <span class="k">return</span> <span class="n">node</span>
+        <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;In Radio Network! No node &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">NodeId</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; found!&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.get_RadioNode_Ids"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.get_RadioNode_Ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_RadioNode_Ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns list of RadioNode Ids.</span>
+
+<span class="sd">        :returns: list of node Ids</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">get_Id</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.append_RadioNode"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.append_RadioNode">[docs]</a>    <span class="k">def</span> <span class="nf">append_RadioNode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radionode</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds the RadioNode Node to the network.</span>
+
+<span class="sd">        :param Node: RadioNode</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radionode</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="n">radionode</span><span class="o">.</span><span class="n">get_Id</span><span class="p">()</span>
+            <span class="n">NodeList</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_RadioNode_Ids</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">NodeList</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot; No node added. Node - &quot;</span> <span class="o">+</span> <span class="n">radionode</span><span class="o">.</span><span class="n">get_Id</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; - already exists!&quot;</span>
+                <span class="k">return</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radionode</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.set_RadioNode_BwMHz"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.set_RadioNode_BwMHz">[docs]</a>    <span class="k">def</span> <span class="nf">set_RadioNode_BwMHz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeId</span><span class="p">,</span> <span class="n">Bw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets radio node bandwidth.</span>
+
+<span class="sd">        :param nodeId: node Id</span>
+<span class="sd">        :param Bw: bandwidth in MHz</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_RadioNode_Ids</span><span class="p">()</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="nb">list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">nodeId</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">set_BwMHz</span><span class="p">(</span><span class="n">Bw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.set_RadioNode_FcMHz"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.set_RadioNode_FcMHz">[docs]</a>    <span class="k">def</span> <span class="nf">set_RadioNode_FcMHz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeId</span><span class="p">,</span> <span class="n">Fc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets radio node carrier frequency.</span>
+
+<span class="sd">        :param nodeId: node Id</span>
+<span class="sd">        :param Fc: node carrie frequency in MHz</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_RadioNode_Ids</span><span class="p">()</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="nb">list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">nodeId</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">set_FcMHz</span><span class="p">(</span><span class="n">Fc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.set_RadioNode_PowdBm"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.set_RadioNode_PowdBm">[docs]</a>    <span class="k">def</span> <span class="nf">set_RadioNode_PowdBm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeId</span><span class="p">,</span> <span class="n">Pow</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets radio node Tx/Rx power.</span>
+
+<span class="sd">        :param nodeId: node Id</span>
+<span class="sd">        :param Pow: bandwidth in dBm</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_RadioNode_Ids</span><span class="p">()</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="nb">list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">nodeId</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">set_PowdBm</span><span class="p">(</span><span class="n">Pow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.get_RadioNode_PowdBm"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.get_RadioNode_PowdBm">[docs]</a>    <span class="k">def</span> <span class="nf">get_RadioNode_PowdBm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeId</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns RadioNode power.</span>
+
+<span class="sd">        :param nodeId: node Id</span>
+
+<span class="sd">        :returns: Tx/Rx power of node in dBm</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_RadioNode</span><span class="p">(</span><span class="n">nodeId</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">get_PowdBm</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.get_RadioNode_FcMHz"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.get_RadioNode_FcMHz">[docs]</a>    <span class="k">def</span> <span class="nf">get_RadioNode_FcMHz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeId</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns RadioNode carrier frequency.</span>
+
+<span class="sd">        :param nodeId: node Id</span>
+
+<span class="sd">        :returns: carrier frequncy in MHz</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_RadioNode</span><span class="p">(</span><span class="n">nodeId</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">get_FcMHz</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.set_RadioNode_Alt"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.set_RadioNode_Alt">[docs]</a>    <span class="k">def</span> <span class="nf">set_RadioNode_Alt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeId</span><span class="p">,</span> <span class="n">alt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets radio node altitide above sea level.</span>
+
+<span class="sd">        :param nodeId: node Id</span>
+<span class="sd">        :param alt: altitude in [m]</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_RadioNode_Ids</span><span class="p">()</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="nb">list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">nodeId</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">set_Alt</span><span class="p">(</span><span class="n">alt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.get_AreaLimits"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.get_AreaLimits">[docs]</a>    <span class="k">def</span> <span class="nf">get_AreaLimits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fract</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds the rectengular area, where nodes are located.</span>
+
+<span class="sd">        :param fract: fraction of area to extend display</span>
+
+<span class="sd">        :returns:  [west, south, east, north]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">loc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_Loc</span><span class="p">()</span>
+        <span class="n">low_left</span> <span class="o">=</span> <span class="n">loc</span>
+        <span class="n">up_right</span> <span class="o">=</span> <span class="n">loc</span>
+
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">:</span>
+            <span class="n">loc</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_Loc</span><span class="p">()</span>
+            <span class="n">low_left</span> <span class="o">=</span> <span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">low_left</span><span class="p">,</span> <span class="n">loc</span><span class="p">)]</span>
+            <span class="n">up_right</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">up_right</span><span class="p">,</span> <span class="n">loc</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="n">fract</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="p">[</span><span class="nb">round</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">))</span><span class="o">*</span><span class="n">fract</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">up_right</span><span class="p">,</span> <span class="n">low_left</span><span class="p">)]</span>
+            <span class="n">low_left</span> <span class="o">=</span> <span class="p">[(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">low_left</span><span class="p">,</span> <span class="n">diff</span><span class="p">)]</span>
+            <span class="n">up_right</span> <span class="o">=</span> <span class="p">[(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">up_right</span><span class="p">,</span> <span class="n">diff</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">low_left</span><span class="p">,</span> <span class="n">up_right</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.plot"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Marker</span><span class="p">,</span> <span class="n">FigNum</span><span class="p">,</span> <span class="n">ShowPlot</span><span class="p">,</span> <span class="n">delta</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the radio network on the map background.</span>
+
+<span class="sd">        :param Marker: marker</span>
+<span class="sd">        :param FigNum: figure number</span>
+<span class="sd">        :param ShowPlot: show plot flag</span>
+<span class="sd">        :param delta: size of boarder</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">FigNum</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">NodeName</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="p">:</span>
+            <span class="n">loc</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_Loc</span><span class="p">()</span>
+            <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">Y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">Z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loc</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">NodeName</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">get_Name</span><span class="p">())</span>
+        <span class="n">pyplot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Marker</span><span class="p">)</span>
+        <span class="n">pyplot</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Id</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span> <span class="n">NodeName</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">delta</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">delta</span><span class="p">)),</span>
+                        <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">),)</span>
+
+        <span class="k">if</span> <span class="n">ShowPlot</span><span class="p">:</span>
+            <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.read_fromCsvFile"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.read_fromCsvFile">[docs]</a>    <span class="k">def</span> <span class="nf">read_fromCsvFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csvFilename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads newtwork from csv file.</span>
+
+<span class="sd">        :param csvFilename:</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">csv</span>
+
+        <span class="c1"># read information about node Id, loc, antenna azimuth, tilt and type from RaPlaT csvFile</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;   Reading Radio network [&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Id</span><span class="p">,</span> <span class="s2">&quot;] csv file: &quot;</span><span class="p">,</span> <span class="n">csvFilename</span>
+            <span class="n">csvRows</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">csvFileObj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">csvFilename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+            <span class="n">readerObj</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csvFileObj</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">readerObj</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;#&quot;</span><span class="p">):</span>
+                    <span class="k">continue</span>  <span class="c1"># skip commented rows</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">row</span> <span class="o">==</span> <span class="p">[]):</span>
+                    <span class="k">continue</span>  <span class="c1"># skip empty rows</span>
+                <span class="n">csvRows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">csvFileObj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;In Radio Network! File &quot;</span><span class="p">,</span> <span class="n">csvFilename</span><span class="p">,</span> <span class="s2">&quot; does not exists!&quot;</span>
+            <span class="k">return</span>
+
+        <span class="c1"># rows processing</span>
+        <span class="n">fileHeader</span> <span class="o">=</span> <span class="n">csvRows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">csvRows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;antID&#39;</span> <span class="ow">in</span> <span class="n">fileHeader</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;In Radio Network! The first row in file &quot;</span><span class="p">,</span> <span class="n">csvFilename</span><span class="p">,</span> <span class="s2">&quot; does not include antID!&quot;</span>
+            <span class="k">return</span>
+
+        <span class="c1"># process radio node rows</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csvRows</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">idx_Id</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;antID&quot;</span><span class="p">)</span>
+                <span class="n">idx_x</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;antEast&quot;</span><span class="p">)</span>
+                <span class="n">idx_y</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;antNorth&quot;</span><span class="p">)</span>
+                <span class="n">idx_z</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;antHeightAG&quot;</span><span class="p">)</span>
+                <span class="n">tmpNode</span> <span class="o">=</span> <span class="n">RadioNode</span><span class="p">(</span><span class="s2">&quot;Id&quot;</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="n">idx_Id</span><span class="p">],</span> <span class="s2">&quot;Loc&quot;</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="n">idx_x</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="n">idx_y</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="n">idx_z</span><span class="p">])</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;cellName&quot;</span><span class="p">)</span>
+                    <span class="n">tmpNode</span><span class="o">.</span><span class="n">set_Name</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">tmpNode</span><span class="o">.</span><span class="n">set_Name</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;antType&quot;</span><span class="p">)</span>
+                    <span class="n">tmpNode</span><span class="o">.</span><span class="n">set_AntType</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">tmpNode</span><span class="o">.</span><span class="n">set_AntType</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;antDirection&quot;</span><span class="p">)</span>
+                    <span class="n">tmpNode</span><span class="o">.</span><span class="n">set_AntAzimuth</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">tmpNode</span><span class="o">.</span><span class="n">set_AntAzimuth</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;antElecTilt&quot;</span><span class="p">)</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;antMechTilt&quot;</span><span class="p">)</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                    <span class="n">tmpNode</span><span class="o">.</span><span class="n">set_AntTilt</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">tmpNode</span><span class="o">.</span><span class="n">set_AntTilt</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">append_RadioNode</span><span class="p">(</span><span class="n">tmpNode</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="n">WarningStr</span> <span class="o">+</span> <span class="s2">&quot;No Radio Node added!&quot;</span>
+                <span class="nb">print</span> <span class="n">row</span>
+
+        <span class="c1"># Adding information about power, channels, frequencies, if exists</span>
+        <span class="n">file_name</span><span class="p">,</span> <span class="n">file_ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">csvFilename</span><span class="p">)</span>
+        <span class="n">csvFilename</span> <span class="o">=</span> <span class="n">file_name</span> <span class="o">+</span> <span class="s2">&quot;chan&quot;</span> <span class="o">+</span> <span class="n">file_ext</span>
+        <span class="nb">print</span> <span class="s2">&quot;   Reading channel information [&quot;</span> <span class="o">+</span>  <span class="bp">self</span><span class="o">.</span><span class="n">Id</span> <span class="o">+</span> <span class="s2">&quot;] csv file: &quot;</span>  <span class="o">+</span> <span class="n">csvFilename</span>
+        <span class="n">csvRows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">csvFileObj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">csvFilename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+            <span class="n">readerObj</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csvFileObj</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">readerObj</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;#&quot;</span><span class="p">):</span>
+                    <span class="k">continue</span>  <span class="c1"># skip commented rows</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">row</span> <span class="o">==</span> <span class="p">[]):</span>
+                    <span class="k">continue</span>  <span class="c1"># skip empty rows</span>
+                <span class="n">csvRows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">csvFileObj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;In Radio Network! File &quot;</span> <span class="o">+</span>  <span class="n">csvFilename</span> <span class="o">+</span> <span class="s2">&quot; does not exists!&quot;</span>
+            <span class="k">return</span>
+
+        <span class="n">fileHeader</span> <span class="o">=</span> <span class="n">csvRows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">csvRows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;antID&#39;</span> <span class="ow">in</span> <span class="n">fileHeader</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;In Radio Network! The first row in file &quot;</span> <span class="o">+</span> <span class="n">csvFilename</span> <span class="o">+</span> <span class="s2">&quot; does not include antID!&quot;</span>
+            <span class="k">return</span>
+
+        <span class="c1"># process radio node rows</span>
+        <span class="n">idx_Id</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;antID&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csvRows</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ant_Id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">idx_Id</span><span class="p">]</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;bw&quot;</span><span class="p">)</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_RadioNode_BwMHz</span><span class="p">(</span><span class="n">ant_Id</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;freq&quot;</span><span class="p">)</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_RadioNode_FcMHz</span><span class="p">(</span><span class="n">ant_Id</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;powdBm&quot;</span><span class="p">)</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_RadioNode_PowdBm</span><span class="p">(</span><span class="n">ant_Id</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">fileHeader</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;nmv&quot;</span><span class="p">)</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_RadioNode_Alt</span><span class="p">(</span><span class="n">ant_Id</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.get_RadioNode_Loc"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.get_RadioNode_Loc">[docs]</a>    <span class="k">def</span> <span class="nf">get_RadioNode_Loc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeId</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns node location of node.</span>
+
+<span class="sd">        :param nodeId: nodes Id</span>
+
+<span class="sd">        :returns: [west-east, south-north, alatitude above ground level]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_RadioNode</span><span class="p">(</span><span class="n">nodeId</span><span class="p">)</span>
+        <span class="n">Loc</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_Loc</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Loc</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.get_Locations"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.get_Locations">[docs]</a>    <span class="k">def</span> <span class="nf">get_Locations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns node locations of nodes in network.</span>
+
+<span class="sd">        :param nodeId: nodes Id</span>
+
+<span class="sd">        :returns: [west-east, south-north, alatitude above ground level]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">Ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_RadioNode_Ids</span><span class="p">()</span>
+        <span class="n">loc</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">Ids</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_RadioNode_Loc</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+            <span class="n">loc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loc</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.set_RadioNode_Loc"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.set_RadioNode_Loc">[docs]</a>    <span class="k">def</span> <span class="nf">set_RadioNode_Loc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeId</span><span class="p">,</span> <span class="n">Loc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets locations of radio nodes.</span>
+
+<span class="sd">        :param nodeId: node Id</span>
+<span class="sd">        :param Loc: node location</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_RadioNode</span><span class="p">(</span><span class="n">nodeId</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_RadioNode_Index</span><span class="p">(</span><span class="n">nodeId</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">set_Loc</span><span class="p">(</span><span class="n">Loc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RadioNodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.get_Region_Map"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.get_Region_Map">[docs]</a>    <span class="k">def</span> <span class="nf">get_Region_Map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns radio map region.</span>
+
+<span class="sd">        :param margin: margin beyond the area limits</span>
+<span class="sd">        :returns: region map [west, south, delta_west, delta_south, cols, rows]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">limits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_AreaLimits</span><span class="p">(</span><span class="n">margin</span><span class="p">)</span>
+        <span class="n">delta_west</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">delta_south</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">west</span> <span class="o">=</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">south</span> <span class="o">=</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">east</span> <span class="o">=</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">north</span> <span class="o">=</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">east</span> <span class="o">-</span> <span class="n">west</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta_west</span><span class="p">)</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">north</span> <span class="o">-</span> <span class="n">south</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta_south</span><span class="p">)</span>
+        <span class="n">Region</span> <span class="o">=</span> <span class="n">Raster_Map</span><span class="o">.</span><span class="n">RasterMap</span><span class="p">(</span><span class="s2">&quot;Region&quot;</span><span class="p">,</span> <span class="n">west</span><span class="p">,</span> <span class="n">south</span><span class="p">,</span> <span class="n">delta_west</span><span class="p">,</span> <span class="n">delta_south</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">rows</span><span class="p">)</span>
+        <span class="n">Region</span><span class="o">.</span><span class="n">set_Values</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Region</span></div>
+
+<div class="viewcode-block" id="RadioNetwork.add_rnd_Loc"><a class="viewcode-back" href="../../index.html#RE.Radio_Net.RadioNetwork.add_rnd_Loc">[docs]</a>    <span class="k">def</span> <span class="nf">add_rnd_Loc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Region</span><span class="p">,</span> <span class="n">N_nodes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds nodes random locations.</span>
+
+<span class="sd">        :param Region: region of the map</span>
+<span class="sd">        :param N_nodes: number of nodes</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">margins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Region</span><span class="o">.</span><span class="n">get_Region_WSEN</span><span class="p">())</span>  <span class="c1"># south, west, north, east</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">margins</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">margins</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">margins</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">margins</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">loc_sw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">margins</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">margins</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N_nodes</span><span class="p">):</span>
+            <span class="n">loc_rnd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta</span>
+            <span class="n">loc</span> <span class="o">=</span> <span class="n">loc_sw</span> <span class="o">+</span> <span class="n">loc_rnd</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">RadioNode</span><span class="p">(</span><span class="s2">&quot;Id&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">set_Loc</span><span class="p">(</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">append_RadioNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">return</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--------------------------------------------&quot;</span>
+    <span class="nb">print</span> <span class="s2">&quot;|        Node and RadioNetwork class testing        |&quot;</span>
+    <span class="nb">print</span> <span class="s2">&quot;--------------------------------------------</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="n">Rx</span> <span class="o">=</span> <span class="n">RadioNode</span><span class="p">(</span><span class="s2">&quot;Id&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Loc&quot;</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;BwMHz&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">Rx</span><span class="o">.</span><span class="n">set_FcMHz</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span>
+    <span class="n">Rx</span><span class="o">.</span><span class="n">set_PowdBm</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">Rx</span><span class="o">.</span><span class="n">print_node</span><span class="p">()</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="p">[</span><span class="n">path</span><span class="p">,</span> <span class="n">tail</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">projDir</span> <span class="o">=</span> <span class="n">iniProject</span><span class="o">.</span><span class="n">iniDir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">csv_file</span> <span class="o">=</span> <span class="s2">&quot;Log-a-Tec_2_JSI.csv&quot;</span>
+    <span class="n">csv_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">projDir</span><span class="p">[</span><span class="s2">&quot;csv&quot;</span><span class="p">],</span> <span class="n">csv_file</span><span class="p">)</span>
+
+    <span class="n">BaseStations</span> <span class="o">=</span> <span class="n">RadioNetwork</span><span class="p">(</span><span class="s2">&quot;BaseStations&quot;</span><span class="p">)</span>
+    <span class="n">BaseStations</span><span class="o">.</span><span class="n">read_fromCsvFile</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
+
+    <span class="nb">print</span> <span class="n">BaseStations</span><span class="o">.</span><span class="n">get_Id</span><span class="p">()</span>
+    <span class="nb">print</span> <span class="n">BaseStations</span><span class="o">.</span><span class="n">get_RadioNode_Ids</span><span class="p">()</span>
+    <span class="nb">print</span> <span class="n">BaseStations</span><span class="o">.</span><span class="n">get_AreaLimits</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">BaseStations</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, T. Javornik.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

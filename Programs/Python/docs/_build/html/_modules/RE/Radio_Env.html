@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>RE.Radio_Env &#8212; Localization Toolbox 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for RE.Radio_Env</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    RE.Radio_Env</span>
+<span class="sd">    ============</span>
+<span class="sd">    contains the definition of the radio environment class.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">RE.Raster_Map</span> <span class="k">as</span> <span class="nn">Map</span>
+
+<span class="n">ErrorStr</span> <span class="o">=</span> <span class="s2">&quot;--- ERROR: &quot;</span>
+<span class="n">WarningStr</span> <span class="o">=</span> <span class="s2">&quot;--- Warning: &quot;</span>
+
+<div class="viewcode-block" id="RadioEnvironment"><a class="viewcode-back" href="../../index.html#RE.Radio_Env.RadioEnvironment">[docs]</a><span class="k">class</span> <span class="nc">RadioEnvironment</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class stores and process radio environment:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Id</span><span class="p">):</span>
+        <span class="n">Region</span> <span class="o">=</span> <span class="n">Map</span><span class="o">.</span><span class="n">RasterMap</span><span class="p">(</span><span class="s2">&quot;Region&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Region = [west, south, delta_west, delta_north, cols, rows]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Id</span> <span class="o">=</span> <span class="n">Id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Region</span> <span class="o">=</span> <span class="n">Region</span>                <span class="c1"># region, observed area</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Networks</span> <span class="o">=</span> <span class="p">[]</span>                  <span class="c1"># list of networks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Network_Ids</span> <span class="o">=</span> <span class="p">[]</span>               <span class="c1"># list of network Ids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Raster_Maps</span> <span class="o">=</span> <span class="p">[]</span>               <span class="c1"># list of raster maps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Raster_Map_Ids</span> <span class="o">=</span> <span class="p">[]</span>            <span class="c1"># list of Raster map Ids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Measurements</span> <span class="o">=</span> <span class="p">[]</span>              <span class="c1"># list of Measurements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Measurement_Ids</span> <span class="o">=</span> <span class="p">[]</span>           <span class="c1"># list of Measurement Ids</span>
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="RadioEnvironment.set_Region"><a class="viewcode-back" href="../../index.html#RE.Radio_Env.RadioEnvironment.set_Region">[docs]</a>    <span class="k">def</span> <span class="nf">set_Region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Region</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the region of the radio environment.</span>
+
+<span class="sd">        :param float, float, float, float, int, int Region: [west, south, delta_west, delta_north, cols, rows]</span>
+<span class="sd">        :return:</span>
+
+<span class="sd">        IJS_Outdoor.set_Region([0.0, 0.0, 1.0, 1.0, 10, 10])</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Region</span> <span class="o">=</span> <span class="n">Region</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioEnvironment.get_Region"><a class="viewcode-back" href="../../index.html#RE.Radio_Env.RadioEnvironment.get_Region">[docs]</a>    <span class="k">def</span> <span class="nf">get_Region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: the region of the radio environment [west, south, delta_west, delta_north, cols, rows]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Region</span></div>
+
+<div class="viewcode-block" id="RadioEnvironment.append"><a class="viewcode-back" href="../../index.html#RE.Radio_Env.RadioEnvironment.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">Id</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Appends a new radio environment element.</span>
+
+<span class="sd">        :param str typ: type of radio environment [&quot;Network&quot;, &quot;Raster Map&quot;, &quot;Measurements&quot;]</span>
+<span class="sd">        :param str Id: Id of imported element</span>
+<span class="sd">        :param radio_network, Element: element to be imported</span>
+
+<span class="sd">        :return:</span>
+
+<span class="sd">        IJS_Outdoor.append(&quot;Network&quot;, &quot;Anchors&quot;, Anchors)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;Network&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Networks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Element</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Network_Ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Id</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;Raster Map&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Raster_Maps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Element</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Raster_Map_Ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Id</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;Measurements&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Measurements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Element</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Measurement_Ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Id</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;Radio environment type --- &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; --- is not defined!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioEnvironment.get_Ids"><a class="viewcode-back" href="../../index.html#RE.Radio_Env.RadioEnvironment.get_Ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_Ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of radio environment Ids of type typ.</span>
+
+<span class="sd">        :param str typ: type of radio environment [&quot;Network&quot;, &quot;Raster Map&quot;, &quot;Measurements&quot;]</span>
+<span class="sd">        :returns: a list of radio environment of type typ</span>
+<span class="sd">        :rtype: [str, str, str, ...]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;Network&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Network_Ids</span>
+        <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;Raster Map&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Raster_Map_Ids</span>
+        <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;Measurements&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Measurement_Ids</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;Radio environment type --- &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; --- is not defined!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioEnvironment.get"><a class="viewcode-back" href="../../index.html#RE.Radio_Env.RadioEnvironment.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">Id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a radio environment element.</span>
+
+<span class="sd">        :param str typ: type of radio environment</span>
+<span class="sd">        :param str Id: Id of radio environment</span>
+
+<span class="sd">        :returns: radio environment element</span>
+<span class="sd">        :rtype: network, raster_maps, measurements</span>
+
+<span class="sd">        IJS_Outdoor.get(&quot;Network&quot;, &quot;Anchors&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;Network&quot;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Network_Ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">Id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Networks</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;Raster Map&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Raster_Maps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;Measurements&quot;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Measurement_Ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">Id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Measurements</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;Radio environment type --- &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; --- is not defined!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioEnvironment.delete"><a class="viewcode-back" href="../../index.html#RE.Radio_Env.RadioEnvironment.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">Id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes the radio element from the radio environment.</span>
+
+<span class="sd">        :param str typ: type of radio environment</span>
+<span class="sd">        :param str Id: Id of radio environment</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;Network&quot;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Network_Ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">Id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Networks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Network_Ids</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;Raster Map&quot;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Raster_Maps</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">Id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Raster_Maps</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Raster_Map_Ids</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;Measurements&quot;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Measurement_Ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">Id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Measurements</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Measurements_Ids</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot;Radio environment type --- &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; --- is not defined!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioEnvironment.replace"><a class="viewcode-back" href="../../index.html#RE.Radio_Env.RadioEnvironment.replace">[docs]</a>    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">Id</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Replaces the element in radio environment.</span>
+
+<span class="sd">        :param str typ: element type</span>
+<span class="sd">        :param str Id: element Id</span>
+<span class="sd">        :param element: new element</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="n">Id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="n">Id</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot; Can not replace element with Id: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">Id</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RadioEnvironment.experiment_est_loc_LS"><a class="viewcode-back" href="../../index.html#RE.Radio_Env.RadioEnvironment.experiment_est_loc_LS">[docs]</a>    <span class="k">def</span> <span class="nf">experiment_est_loc_LS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pl_exp</span><span class="p">,</span> <span class="n">ref_node_index</span><span class="p">,</span> <span class="n">hist_plot</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Describe experiment in radio environment:</span>
+
+<span class="sd">        Estimates the agent locations using least square method.</span>
+
+<span class="sd">        :param float pl_exp: path loss exponent to convert RSSI to distance</span>
+<span class="sd">        :param int ref_node_index: index of the reference node</span>
+<span class="sd">        :param bool hist_plot: flag for plotting histogram of errors</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   Least square localization method for a node location:&quot;</span>
+        <span class="n">Anchors_Id</span> <span class="o">=</span> <span class="s2">&quot;Anchors&quot;</span>
+        <span class="n">Measurements_Id</span> <span class="o">=</span> <span class="s2">&quot;RSSI&quot;</span>
+        <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Network&quot;</span><span class="p">,</span> <span class="s2">&quot;Agents&quot;</span><span class="p">)</span>
+        <span class="n">agents</span><span class="o">.</span><span class="n">est_loc_LS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Measurements_Id</span><span class="p">,</span> <span class="n">Anchors_Id</span><span class="p">,</span> <span class="n">pl_exp</span><span class="p">,</span> <span class="n">ref_node_index</span><span class="p">)</span>
+        <span class="n">ref_network</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Network&quot;</span><span class="p">,</span> <span class="s2">&quot;refAgents&quot;</span><span class="p">)</span>
+        <span class="n">agents</span><span class="o">.</span><span class="n">loc_error</span><span class="p">(</span><span class="n">ref_network</span><span class="p">,</span> <span class="n">hist_plot</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="RadioEnvironment.experiment_est_loc_FP"><a class="viewcode-back" href="../../index.html#RE.Radio_Env.RadioEnvironment.experiment_est_loc_FP">[docs]</a>    <span class="k">def</span> <span class="nf">experiment_est_loc_FP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pl_exp</span><span class="p">,</span> <span class="n">ref_node_index</span><span class="p">,</span> <span class="n">hist_plot</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Describes experiment in radio environment:</span>
+
+<span class="sd">        estimates the agent locations based using finger print method</span>
+
+<span class="sd">        :param float pl_exp: path loss exponent to convert RSSI to distance</span>
+<span class="sd">        :param int ref_node_index: index of the reference node</span>
+<span class="sd">        :param bool hist_plot: flag for plotting histogram of errors</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   Finger print localization method for a node location:&quot;</span>
+        <span class="n">Anchors_Id</span> <span class="o">=</span> <span class="s2">&quot;Anchors&quot;</span>
+        <span class="n">Measurements_Id</span> <span class="o">=</span> <span class="s2">&quot;RSSI&quot;</span>
+        <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Network&quot;</span><span class="p">,</span> <span class="s2">&quot;Agents&quot;</span><span class="p">)</span>
+        <span class="n">agents</span><span class="o">.</span><span class="n">est_loc_FP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Measurements_Id</span><span class="p">,</span> <span class="n">Anchors_Id</span><span class="p">,</span> <span class="n">pl_exp</span><span class="p">,</span> <span class="n">ref_node_index</span><span class="p">)</span>
+        <span class="n">ref_network</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Network&quot;</span><span class="p">,</span> <span class="s2">&quot;refAgents&quot;</span><span class="p">)</span>
+        <span class="n">agents</span><span class="o">.</span><span class="n">loc_error</span><span class="p">(</span><span class="n">ref_network</span><span class="p">,</span> <span class="n">hist_plot</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="nb">print</span> <span class="s2">&quot;Test radio environment&quot;</span>
+    <span class="n">IJS_Outdoor</span> <span class="o">=</span> <span class="n">RadioEnvironment</span><span class="p">(</span><span class="s2">&quot;IJS Outdoor&quot;</span><span class="p">)</span>
+    <span class="n">Region</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+    <span class="n">IJS_Outdoor</span><span class="o">.</span><span class="n">set_Region</span><span class="p">(</span><span class="n">Region</span><span class="p">)</span>
+    <span class="nb">print</span> <span class="n">IJS_Outdoor</span><span class="o">.</span><span class="n">get_Region</span><span class="p">()</span>
+    <span class="nb">print</span> <span class="s2">&quot;Test finished&quot;</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, T. Javornik.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

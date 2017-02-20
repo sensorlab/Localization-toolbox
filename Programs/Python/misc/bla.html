@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+	<link rel="shortcut icon" href="favicon.ico">
+    <title>LOG-a-TEC-IJS</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+         function addNode(map, node_position, node_image, node_info){
+
+            var infowindow = new google.maps.InfoWindow({
+                content: node_info
+                });
+
+            var marker = new google.maps.Marker({
+                position: node_position,
+                map: map,
+                title: node_info,
+                icon: node_image
+            });
+
+            marker.addListener('click', function() {
+                infowindow.open(map, marker);
+            });
+            return marker
+        }
+    	function initMap() {
+            var map_center = {lat:46.0421083, lng:14.4879801};
+            var map_zoom = 20
+            var map_type = 'roadmap'
+            
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: map_zoom,
+                center: map_center,
+                mapTypeId: map_type
+            });            
+
+            /*** nodes section ***/
+
+            /* node Node_1 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_1</h3> \
+                              </div>'
+
+            marker_Node_1 = addNode(map, {lat:46.0421083, lng:14.4879801}, image, info);
+
+
+            /* node Node_2 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_2</h3> \
+                              </div>'
+
+            marker_Node_2 = addNode(map, {lat:46.0420124, lng:14.4880432}, image, info);
+
+
+            /* node Node_3 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_3</h3> \
+                              </div>'
+
+            marker_Node_3 = addNode(map, {lat:46.042152, lng:14.4881264}, image, info);
+
+
+            /* node Node_4 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_4</h3> \
+                              </div>'
+
+            marker_Node_4 = addNode(map, {lat:46.0420533, lng:14.4881894}, image, info);
+
+
+            /* node Node_5 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_5</h3> \
+                              </div>'
+
+            marker_Node_5 = addNode(map, {lat:46.0420998, lng:14.488349}, image, info);
+
+
+            /* node Node_6 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_6</h3> \
+                              </div>'
+
+            marker_Node_6 = addNode(map, {lat:46.0421948, lng:14.4882792}, image, info);
+
+
+            /* node Node_7 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_7</h3> \
+                              </div>'
+
+            marker_Node_7 = addNode(map, {lat:46.0419583, lng:14.4882176}, image, info);
+
+
+            /* node Node_8 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_8</h3> \
+                              </div>'
+
+            marker_Node_8 = addNode(map, {lat:46.0420561, lng:14.4885447}, image, info);
+
+
+            /* node Node_9 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_9</h3> \
+                              </div>'
+
+            marker_Node_9 = addNode(map, {lat:46.0421967, lng:14.4885716}, image, info);
+
+
+            /* node Node_10 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_10</h3> \
+                              </div>'
+
+            marker_Node_10 = addNode(map, {lat:46.0423391, lng:14.4884697}, image, info);
+
+
+            /* node Border_router_backup */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Border_router_backup</h3> \
+                              </div>'
+
+            marker_Border_router_backup = addNode(map, {lat:46.0422655, lng:14.4881291}, image, info);
+
+
+            /* node Node_12 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_12</h3> \
+                              </div>'
+
+            marker_Node_12 = addNode(map, {lat:46.0422255, lng:14.4880016}, image, info);
+
+
+            /* node Node_13 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_13</h3> \
+                              </div>'
+
+            marker_Node_13 = addNode(map, {lat:46.0421883, lng:14.4878837}, image, info);
+
+
+            /* node Node_14 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_14</h3> \
+                              </div>'
+
+            marker_Node_14 = addNode(map, {lat:46.0420794, lng:14.4877991}, image, info);
+
+
+            /* node Border_router */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Border_router</h3> \
+                              </div>'
+
+            marker_Border_router = addNode(map, {lat:46.0419147, lng:14.4879051}, image, info);
+
+
+            /* node Node_16 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_16</h3> \
+                              </div>'
+
+            marker_Node_16 = addNode(map, {lat:46.0420077, lng:14.4883999}, image, info);
+
+
+            /* node Node_17 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_17</h3> \
+                              </div>'
+
+            marker_Node_17 = addNode(map, {lat:46.0418141, lng:14.4879949}, image, info);
+
+
+            /* node Node_18 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_18</h3> \
+                              </div>'
+
+            marker_Node_18 = addNode(map, {lat:46.0420067, lng:14.4878527}, image, info);
+
+
+            /* node Node_19 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_19</h3> \
+                              </div>'
+
+            marker_Node_19 = addNode(map, {lat:46.0423773, lng:14.4882363}, image, info);
+
+
+            /* node Node_20 */ 
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/x_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node_20</h3> \
+                              </div>'
+
+            marker_Node_20 = addNode(map, {lat:46.0423158, lng:14.4882672}, image, info);
+
+            /*** next node ***/
+
+            /*** end nodes section ***/
+
+            /*** overlay section ***/
+            /*** next overlay ***/
+
+            /*** end overlay section ***/
+
+
+            /* Example of node description
+            var image = 'http://www-e6.ijs.si/~javornik/Share/Icons/s_Icon.png';
+            var info = '<div style="line-height: 1pt;"><h3>Node 3</h3> \
+                              <p>xxx</p> \
+                              <p>yyy</p> \
+                              </div>'
+
+            marker_xxx = addNode(map, {lat:46.04804, lng:14.469283}, image, info);
+
+            var Overlay;
+            var imageBounds = {north: 46.07, south: 46.05, east: 14.48, west: 14.46};
+            var overlayOpts = {opacity:0.7}
+
+            Overlay = new google.maps.GroundOverlay('tmp.jpg', imageBounds, overlayOpts);
+            Overlay.setMap(map);
+            */
+        }    
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?callback=initMap">
+    </script>
+  </body>
+</html>

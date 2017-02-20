@@ -1,0 +1,557 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>RE.Measurements &#8212; Localization Toolbox 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for RE.Measurements</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Measurement</span>
+<span class="sd">    ===========</span>
+<span class="sd">    contains the definition of measurement classes:</span>
+<span class="sd">    - measurement</span>
+<span class="sd">    - trace - a set of measurements</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">misc.iniProject</span> <span class="k">as</span> <span class="nn">iniProject</span>
+<span class="kn">import</span> <span class="nn">misc.GIS</span> <span class="k">as</span> <span class="nn">GIS</span>
+
+<span class="kn">from</span> <span class="nn">RE.Radio_Net</span> <span class="k">import</span> <span class="n">to_num</span> <span class="k">as</span> <span class="n">to_num</span>
+<span class="kn">from</span> <span class="nn">RE.Radio_Net</span> <span class="k">import</span> <span class="n">to_str</span> <span class="k">as</span> <span class="n">to_str</span>
+
+<span class="n">ErrorStr</span> <span class="o">=</span> <span class="s2">&quot;--- ERROR: &quot;</span>
+<span class="n">WarningStr</span> <span class="o">=</span> <span class="s2">&quot;--- Warning: &quot;</span>
+
+<div class="viewcode-block" id="Measurement"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement">[docs]</a><span class="k">class</span> <span class="nc">Measurement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Measurement class stores and process measurements</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Id</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Id</span> <span class="o">=</span> <span class="n">Id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Unit</span> <span class="o">=</span> <span class="kc">None</span>                    <span class="c1"># unit of measurements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="kc">None</span>                    <span class="c1"># type of measurements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="kc">None</span>                   <span class="c1"># numerical value of measurement</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Tx_Node_Id</span> <span class="o">=</span> <span class="kc">None</span>              <span class="c1"># Id of the Tx node</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Tx_Network_Id</span> <span class="o">=</span> <span class="kc">None</span>           <span class="c1"># Id of the Tx network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Rx_Node_Id</span> <span class="o">=</span> <span class="kc">None</span>              <span class="c1"># Id of the Rx node / define location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Rx_Network_Id</span> <span class="o">=</span> <span class="kc">None</span>           <span class="c1"># Id of the Rx network / define location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TimeStamp</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># time stamp of measurement Unix epoche time</span>
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="Measurement.get_Id"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.get_Id">[docs]</a>    <span class="k">def</span> <span class="nf">get_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: Id of measurement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Id</span></div>
+
+<div class="viewcode-block" id="Measurement.set_Id"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.set_Id">[docs]</a>    <span class="k">def</span> <span class="nf">set_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets Id of measurement.</span>
+
+<span class="sd">        :param Id: measurement Id</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Id</span> <span class="o">=</span> <span class="n">Id</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Measurement.get_Unit"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.get_Unit">[docs]</a>    <span class="k">def</span> <span class="nf">get_Unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: unit of measurement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Unit</span></div>
+
+<div class="viewcode-block" id="Measurement.set_Unit"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.set_Unit">[docs]</a>    <span class="k">def</span> <span class="nf">set_Unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets unit of measurement.</span>
+
+<span class="sd">        :param x:</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">iniProject</span><span class="o">.</span><span class="n">Data_Units</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Unit</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="s2">&quot; unit not allowed!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Measurement.get_Type"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.get_Type">[docs]</a>    <span class="k">def</span> <span class="nf">get_Type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: type of measurement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Type</span></div>
+
+<div class="viewcode-block" id="Measurement.set_Type"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.set_Type">[docs]</a>    <span class="k">def</span> <span class="nf">set_Type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets type of measurement.</span>
+
+<span class="sd">        :param x: type of measurement</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">iniProject</span><span class="o">.</span><span class="n">Data_Types</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Type</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="s2">&quot; type not allowed!&quot;</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Measurement.get_Value"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.get_Value">[docs]</a>    <span class="k">def</span> <span class="nf">get_Value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: value of measurement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Value</span></div>
+
+<div class="viewcode-block" id="Measurement.set_Value"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.set_Value">[docs]</a>    <span class="k">def</span> <span class="nf">set_Value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets value of measurement.</span>
+
+<span class="sd">        :param x: value of measurement</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Measurement.get_Rx_Network_Id"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.get_Rx_Network_Id">[docs]</a>    <span class="k">def</span> <span class="nf">get_Rx_Network_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return id of rx network:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rx_Network_Id</span></div>
+
+<div class="viewcode-block" id="Measurement.set_Rx_Network_Id"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.set_Rx_Network_Id">[docs]</a>    <span class="k">def</span> <span class="nf">set_Rx_Network_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets id of Rx network.</span>
+
+<span class="sd">        :param x: Rx network id</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Rx_Network_Id</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Measurement.get_Tx_Network_Id"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.get_Tx_Network_Id">[docs]</a>    <span class="k">def</span> <span class="nf">get_Tx_Network_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: id of Tx network</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tx_Network_Id</span></div>
+
+<div class="viewcode-block" id="Measurement.set_Tx_Network_Id"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.set_Tx_Network_Id">[docs]</a>    <span class="k">def</span> <span class="nf">set_Tx_Network_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets od of Tx network.</span>
+
+<span class="sd">        :param x: Tx network id</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Tx_Network_Id</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Measurement.get_Rx_Node_Id"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.get_Rx_Node_Id">[docs]</a>    <span class="k">def</span> <span class="nf">get_Rx_Node_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: Rx node Id</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rx_Node_Id</span></div>
+
+<div class="viewcode-block" id="Measurement.set_Rx_Node_Id"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.set_Rx_Node_Id">[docs]</a>    <span class="k">def</span> <span class="nf">set_Rx_Node_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets Rx node Id.</span>
+
+<span class="sd">        :param x: Rx node Id</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Rx_Node_Id</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Measurement.get_Tx_Node_Id"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.get_Tx_Node_Id">[docs]</a>    <span class="k">def</span> <span class="nf">get_Tx_Node_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: Tx node Id</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tx_Node_Id</span></div>
+
+<div class="viewcode-block" id="Measurement.set_Tx_Node_Id"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.set_Tx_Node_Id">[docs]</a>    <span class="k">def</span> <span class="nf">set_Tx_Node_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets Tx node Id.</span>
+
+<span class="sd">        :param x: Rx node Id</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Tx_Node_Id</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Measurement.get_TimeStamp"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.get_TimeStamp">[docs]</a>    <span class="k">def</span> <span class="nf">get_TimeStamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: returns the time stamp of measurement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">TimeStamp</span></div>
+
+<div class="viewcode-block" id="Measurement.set_TimeStamp"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.set_TimeStamp">[docs]</a>    <span class="k">def</span> <span class="nf">set_TimeStamp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setd time stamp of measurement.</span>
+
+<span class="sd">        :param x: time stamp of measurement</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TimeStamp</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Measurement.print_Measure"><a class="viewcode-back" href="../../index.html#RE.Measurements.Measurement.print_Measure">[docs]</a>    <span class="k">def</span> <span class="nf">print_Measure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints the measurement on the console.</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">print_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Id</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+        <span class="n">print_str</span> <span class="o">=</span> <span class="n">print_str</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Value</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+        <span class="n">print_str</span> <span class="o">=</span> <span class="n">print_str</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Unit</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+        <span class="n">print_str</span> <span class="o">=</span> <span class="n">print_str</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Type</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+        <span class="n">print_str</span> <span class="o">=</span> <span class="n">print_str</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TimeStamp</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+        <span class="n">print_str</span> <span class="o">=</span> <span class="n">print_str</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Rx_Node_Id</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+        <span class="n">print_str</span> <span class="o">=</span> <span class="n">print_str</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Tx_Node_Id</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+        <span class="nb">print</span> <span class="n">print_str</span>
+        <span class="k">return</span></div></div>
+
+
+<div class="viewcode-block" id="Trace"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace">[docs]</a><span class="k">class</span> <span class="nc">Trace</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Class defines a set of measurement.**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Id</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Id</span> <span class="o">=</span> <span class="n">Id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Measures</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="Trace.set_Id"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace.set_Id">[docs]</a>    <span class="k">def</span> <span class="nf">set_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets trace id.</span>
+
+<span class="sd">        :param Id: trace id</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Id</span> <span class="o">=</span> <span class="n">Id</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Trace.get_Id"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace.get_Id">[docs]</a>    <span class="k">def</span> <span class="nf">get_Id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: trace id</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Id</span></div>
+
+<div class="viewcode-block" id="Trace.len"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace.len">[docs]</a>    <span class="k">def</span> <span class="nf">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: number of measurements</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Measures</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Trace.append"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Appends measurement.</span>
+
+<span class="sd">        :param x: measurement in form of dictionary:</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#{&quot;Id&quot;: &quot;1&quot;, &quot;Unit&quot;: &quot;m&quot;, &quot;Type&quot;: &quot;Dist&quot;,</span>
+        <span class="c1"># &quot;Value&quot;: 10.0, &quot;Tx_Node_Id&quot;: &quot;BS1&quot;, &quot;Rx_Node_Id&quot;: &quot;Agent 1&quot;,</span>
+        <span class="c1">#&quot;Tx_Network_Id&quot;: &quot;Anchors&quot;, &quot;Tx_Network_Id&quot;: &quot;Agents&quot;, &quot;TimeStamp&quot;, &quot;To be defined&quot;}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_itm</span> <span class="o">=</span> <span class="n">Measurement</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;Id&quot;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">ErrorStr</span> <span class="o">+</span> <span class="s2">&quot; No measurement Id specified!&quot;</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;Loc&quot;</span><span class="p">]</span>
+            <span class="n">new_itm</span><span class="o">.</span><span class="n">set_Loc</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_itm</span><span class="o">.</span><span class="n">set_Unit</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;Unit&quot;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_itm</span><span class="o">.</span><span class="n">set_Type</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;Type&quot;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_itm</span><span class="o">.</span><span class="n">set_Value</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;Value&quot;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_itm</span><span class="o">.</span><span class="n">set_Tx_Node_Id</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;Tx_Node_Id&quot;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_itm</span><span class="o">.</span><span class="n">set_Rx_Node_Id</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;Rx_Node_Id&quot;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_itm</span><span class="o">.</span><span class="n">set_Tx_Network_Id</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;Tx_Network_Id&quot;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_itm</span><span class="o">.</span><span class="n">set_Rx_Network_Id</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;Rx_Network_Id&quot;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_itm</span><span class="o">.</span><span class="n">set_TimeStamp</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;TimeStamp&quot;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Measures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_itm</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Trace.remove_measure"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace.remove_measure">[docs]</a>    <span class="k">def</span> <span class="nf">remove_measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measure_Id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes measurement from trace.</span>
+
+<span class="sd">        :param measure_Id: measurement id</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_measure_index</span><span class="p">(</span><span class="n">measure_Id</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">Measures</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Trace.replace_measure"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace.replace_measure">[docs]</a>    <span class="k">def</span> <span class="nf">replace_measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measure_Id</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Replaces measurement in trace.</span>
+
+<span class="sd">        :param measure_Id: measurement id</span>
+<span class="sd">        :param x: new measurement</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_measure</span><span class="p">(</span><span class="n">measure_Id</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">[</span><span class="s2">&quot;Id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">measure_Id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+    <span class="k">def</span> <span class="nf">get_measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Id</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Measures</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_Id</span><span class="p">()</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">Id</span><span class="p">)):</span>
+                <span class="n">y</span>  <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Id&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">get_Id</span><span class="p">(),</span>
+                        <span class="s2">&quot;Unit&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">get_Unit</span><span class="p">(),</span>
+                        <span class="s2">&quot;Type&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">get_Type</span><span class="p">(),</span>
+                        <span class="s2">&quot;Value&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">get_Value</span><span class="p">(),</span>
+                        <span class="s2">&quot;Tx_Node_Id&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">get_Tx_Node_Id</span><span class="p">(),</span>
+                        <span class="s2">&quot;Rx_Node_Id&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">get_Rx_Node_Id</span><span class="p">(),</span>
+                        <span class="s2">&quot;Tx_Network_Id&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">get_Tx_Network_Id</span><span class="p">(),</span>
+                        <span class="s2">&quot;Rx_Network_Id&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">get_Rx_Network_Id</span><span class="p">(),</span>
+                        <span class="s2">&quot;TimeStamp&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">get_TimeStamp</span><span class="p">()</span>
+                      <span class="p">}</span>
+                <span class="k">return</span> <span class="n">y</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Trace.set_measure_value"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace.set_measure_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_measure_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measure_Id</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Replaces the value of measurements.</span>
+
+<span class="sd">        :param measure_id: measurement id</span>
+<span class="sd">        :param value: new value</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="n">measure_Id</span><span class="p">)</span>
+        <span class="n">y</span><span class="p">[</span><span class="s2">&quot;Value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">replace_measure</span><span class="p">(</span><span class="n">measure_Id</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Trace.get_measure_index"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace.get_measure_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_measure_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param id: measurement Id</span>
+<span class="sd">        :returns: measurement index</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ii</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Measures</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Measures</span><span class="p">,</span> <span class="n">ii</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_Id</span><span class="p">()</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">Id</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="n">i</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Trace.print_Trace"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace.print_Trace">[docs]</a>    <span class="k">def</span> <span class="nf">print_Trace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints trace on the console.</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;Trace Id: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">Id</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Measures</span><span class="p">:</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">print_Measure</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Trace.get"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tx_net_Id</span><span class="p">,</span> <span class="n">tx_node_Id</span><span class="p">,</span> <span class="n">rx_net_Id</span><span class="p">,</span> <span class="n">rx_node_Id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets all measurements which corresponds to following parameters:</span>
+
+<span class="sd">        :param tx_net_Id: tx network id</span>
+<span class="sd">        :param tx_node_Id: tx node id</span>
+<span class="sd">        :param rx_net_Id: rx network id</span>
+<span class="sd">        :param rx_node_Id: rx node id</span>
+
+<span class="sd">        :returns: list of measurements</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Measures</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tx_net_Id</span> <span class="o">==</span> <span class="n">x</span><span class="o">.</span><span class="n">get_Tx_Network_Id</span><span class="p">()</span> <span class="ow">and</span> <span class="n">tx_node_Id</span> <span class="o">==</span> <span class="n">x</span><span class="o">.</span><span class="n">get_Tx_Node_Id</span><span class="p">()</span> <span class="ow">and</span> \
+               <span class="n">rx_net_Id</span> <span class="o">==</span> <span class="n">x</span><span class="o">.</span><span class="n">get_Rx_Network_Id</span><span class="p">()</span> <span class="ow">and</span> <span class="n">rx_node_Id</span> <span class="o">==</span> <span class="n">x</span><span class="o">.</span><span class="n">get_Rx_Node_Id</span><span class="p">():</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+
+<div class="viewcode-block" id="Trace.set_values_from_maps"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace.set_values_from_maps">[docs]</a>    <span class="k">def</span> <span class="nf">set_values_from_maps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Maps</span><span class="p">,</span> <span class="n">Locs</span><span class="p">,</span> <span class="n">Rx_Ids</span><span class="p">,</span> <span class="n">Tx_Ids</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets measurement value from the raster maps.</span>
+
+<span class="sd">        :param Maps: list of raster maps</span>
+<span class="sd">        :param Locs: list of locations</span>
+<span class="sd">        :param Rx_Ids: list of Rx Ids</span>
+<span class="sd">        :param Tx_Ids: listo of Tx Ids</span>
+<span class="sd">        :param x: measurement</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">rx</span><span class="p">,</span> <span class="n">loc</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Rx_Ids</span><span class="p">,</span> <span class="n">Locs</span><span class="p">):</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="n">get_Values</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">for</span> <span class="n">val</span><span class="p">,</span> <span class="n">tx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">Tx_Ids</span><span class="p">):</span>
+                <span class="n">x</span><span class="p">[</span><span class="s2">&quot;Id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tx</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
+                <span class="n">x</span><span class="p">[</span><span class="s2">&quot;Value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+                <span class="n">x</span><span class="p">[</span><span class="s2">&quot;Tx_Node_Id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tx</span>
+                <span class="n">x</span><span class="p">[</span><span class="s2">&quot;Rx_Node_Id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rx</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Trace.add_error"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace.add_error">[docs]</a>    <span class="k">def</span> <span class="nf">add_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        add error to the measurement</span>
+<span class="sd">        :param args: type of error</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Vals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">Ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Rayleigh&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Measures</span><span class="p">:</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="mf">10.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rayleigh</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">Vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_Value</span><span class="p">()</span> <span class="o">+</span> <span class="n">error</span><span class="p">)</span>
+                <span class="n">Ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_Id</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="n">val</span><span class="p">,</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Vals</span><span class="p">,</span> <span class="n">Ids</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_measure_value</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Trace.quantize_vals"><a class="viewcode-back" href="../../index.html#RE.Measurements.Trace.quantize_vals">[docs]</a>    <span class="k">def</span> <span class="nf">quantize_vals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">quant</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Quantizes the measurement.</span>
+
+<span class="sd">        :param quant: quantizaion of measurement results</span>
+<span class="sd">        :returns:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Vals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">Ids</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Measures</span><span class="p">:</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">get_Value</span><span class="p">()</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">z</span> <span class="o">/</span> <span class="n">quant</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">quant</span><span class="p">)</span>
+            <span class="n">Vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">Ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_Id</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="n">val</span><span class="p">,</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Vals</span><span class="p">,</span> <span class="n">Ids</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_measure_value</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">*******************************&quot;</span>
+    <span class="nb">print</span> <span class="s2">&quot;*         Measurement Test    *&quot;</span>
+    <span class="nb">print</span> <span class="s2">&quot;*******************************</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="n">Trace</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="s2">&quot;trace_N0&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">10</span><span class="p">),</span>
+             <span class="s2">&quot;Unit&quot;</span><span class="p">:</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;Dist&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;Value&quot;</span><span class="p">:</span> <span class="n">i</span><span class="o">*</span><span class="mf">10.0</span><span class="p">,</span>
+             <span class="s2">&quot;Tx_Node_Id&quot;</span><span class="p">:</span> <span class="s2">&quot;BS1&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;Rx_Node_Id&quot;</span><span class="p">:</span> <span class="s2">&quot;Agent 1&quot;</span><span class="p">}</span>
+        <span class="n">Trace</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">Trace</span><span class="o">.</span><span class="n">print_Trace</span><span class="p">()</span>
+
+    <span class="n">Trace</span><span class="o">.</span><span class="n">add_error</span><span class="p">(</span><span class="s2">&quot;Rayleigh&quot;</span><span class="p">)</span>
+    <span class="n">Trace</span><span class="o">.</span><span class="n">print_Trace</span><span class="p">()</span>
+
+    <span class="n">Trace</span><span class="o">.</span><span class="n">quantize_vals</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">Trace</span><span class="o">.</span><span class="n">print_Trace</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, T. Javornik.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

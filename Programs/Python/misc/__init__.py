@@ -1,0 +1,5 @@
+"""
+To je modul misc.
+
+
+"""

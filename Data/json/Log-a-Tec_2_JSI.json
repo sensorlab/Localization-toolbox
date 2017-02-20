@@ -1,0 +1,724 @@
+{
+    "nodes": [
+        {
+            "name": "Node 1",
+            "position": {
+                "altitude": 3.5,
+                "GPS": {
+                    "lat": 46.0421083,
+                    "lng": 14.4879801
+                },
+                "GK5": {
+                    "y": 5460741.13,
+                    "x": 5099897.67
+                },
+                "GK6": {
+                    "y": 6228586.21,
+                    "x": 5105756.2
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 2",
+            "position": {
+                "altitude": 3.5,
+                "GPS": {
+                    "lat": 46.0420124,
+                    "lng": 14.488043200000002
+                },
+                "GK5": {
+                    "y": 5460745.94,
+                    "x": 5099886.98
+                },
+                "GK6": {
+                    "y": 6228590.63,
+                    "x": 5105745.32
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 3",
+            "position": {
+                "altitude": 3.5,
+                "GPS": {
+                    "lat": 46.042152,
+                    "lng": 14.4881264
+                },
+                "GK5": {
+                    "y": 5460752.48,
+                    "x": 5099902.46
+                },
+                "GK6": {
+                    "y": 6228597.75,
+                    "x": 5105760.55
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 4",
+            "position": {
+                "altitude": 3.5,
+                "GPS": {
+                    "lat": 46.0420533,
+                    "lng": 14.488189399999998
+                },
+                "GK5": {
+                    "y": 5460757.29,
+                    "x": 5099891.46
+                },
+                "GK6": {
+                    "y": 6228602.14,
+                    "x": 5105749.37
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 5",
+            "position": {
+                "altitude": 3.5,
+                "GPS": {
+                    "lat": 46.0420998,
+                    "lng": 14.488349000000001
+                },
+                "GK5": {
+                    "y": 5460769.67,
+                    "x": 5099896.55
+                },
+                "GK6": {
+                    "y": 6228614.72,
+                    "x": 5105753.99
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 6",
+            "position": {
+                "altitude": 3.5,
+                "GPS": {
+                    "lat": 46.0421948,
+                    "lng": 14.4882792
+                },
+                "GK5": {
+                    "y": 5460764.34,
+                    "x": 5099907.14
+                },
+                "GK6": {
+                    "y": 6228609.79,
+                    "x": 5105764.79
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 7",
+            "position": {
+                "altitude": 4.8,
+                "GPS": {
+                    "lat": 46.0419583,
+                    "lng": 14.4882176
+                },
+                "GK5": {
+                    "y": 5460759.4,
+                    "x": 5099880.88
+                },
+                "GK6": {
+                    "y": 6228603.86,
+                    "x": 5105738.71
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 8",
+            "position": {
+                "altitude": 4.8,
+                "GPS": {
+                    "lat": 46.0420561,
+                    "lng": 14.4885447
+                },
+                "GK5": {
+                    "y": 5460784.79,
+                    "x": 5099891.59
+                },
+                "GK6": {
+                    "y": 6228629.65,
+                    "x": 5105748.47
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 9",
+            "position": {
+                "altitude": 6,
+                "GPS": {
+                    "lat": 46.0421967,
+                    "lng": 14.4885716
+                },
+                "GK5": {
+                    "y": 5460786.97,
+                    "x": 5099907.21
+                },
+                "GK6": {
+                    "y": 6228632.43,
+                    "x": 5105764
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 10",
+            "position": {
+                "altitude": 6,
+                "GPS": {
+                    "lat": 46.0423391,
+                    "lng": 14.488469699999998
+                },
+                "GK5": {
+                    "y": 5460779.19,
+                    "x": 5099923.08
+                },
+                "GK6": {
+                    "y": 6228625.24,
+                    "x": 5105780.17
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Border router - backup",
+            "position": {
+                "altitude": 7.7,
+                "GPS": {
+                    "lat": 46.0422655,
+                    "lng": 14.4881291
+                },
+                "GK5": {
+                    "y": 5460752.77,
+                    "x": 5099915.07
+                },
+                "GK6": {
+                    "y": 6228598.52,
+                    "x": 5105773.16
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 12",
+            "position": {
+                "altitude": 7.7,
+                "GPS": {
+                    "lat": 46.0422255,
+                    "lng": 14.488001600000002
+                },
+                "GK5": {
+                    "y": 5460742.88,
+                    "x": 5099910.69
+                },
+                "GK6": {
+                    "y": 6228588.45,
+                    "x": 5105769.15
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 13",
+            "position": {
+                "altitude": 7.9,
+                "GPS": {
+                    "lat": 46.0421883,
+                    "lng": 14.4878837
+                },
+                "GK5": {
+                    "y": 5460733.72,
+                    "x": 5099906.61
+                },
+                "GK6": {
+                    "y": 6228579.15,
+                    "x": 5105765.42
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 14",
+            "position": {
+                "altitude": 6.7,
+                "GPS": {
+                    "lat": 46.0420794,
+                    "lng": 14.487799099999998
+                },
+                "GK5": {
+                    "y": 5460727.1,
+                    "x": 5099894.55
+                },
+                "GK6": {
+                    "y": 6228572.06,
+                    "x": 5105753.6
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Border router",
+            "position": {
+                "altitude": 7.1,
+                "GPS": {
+                    "lat": 46.0419147,
+                    "lng": 14.4879051
+                },
+                "GK5": {
+                    "y": 5460735.19,
+                    "x": 5099876.19
+                },
+                "GK6": {
+                    "y": 6228579.46,
+                    "x": 5105734.94
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 16",
+            "position": {
+                "altitude": 7.1,
+                "GPS": {
+                    "lat": 46.0420077,
+                    "lng": 14.488399900000001
+                },
+                "GK5": {
+                    "y": 5460773.55,
+                    "x": 5099886.28
+                },
+                "GK6": {
+                    "y": 6228618.21,
+                    "x": 5105743.58
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 17",
+            "position": {
+                "altitude": 5,
+                "GPS": {
+                    "lat": 46.0418141,
+                    "lng": 14.487994899999999
+                },
+                "GK5": {
+                    "y": 5460742.06,
+                    "x": 5099864.97
+                },
+                "GK6": {
+                    "y": 6228585.92,
+                    "x": 5105723.45
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 18",
+            "position": {
+                "altitude": 3.5,
+                "GPS": {
+                    "lat": 46.0420067,
+                    "lng": 14.487852699999998
+                },
+                "GK5": {
+                    "y": 5460731.2,
+                    "x": 5099886.45
+                },
+                "GK6": {
+                    "y": 6228575.86,
+                    "x": 5105745.34
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 19",
+            "position": {
+                "altitude": 5.5,
+                "GPS": {
+                    "lat": 46.042377300000005,
+                    "lng": 14.488236300000002
+                },
+                "GK5": {
+                    "y": 5460761.15,
+                    "x": 5099927.44
+                },
+                "GK6": {
+                    "y": 6228607.36,
+                    "x": 5105785.22
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        },
+        {
+            "name": "Node 20",
+            "position": {
+                "altitude": 5.5,
+                "GPS": {
+                    "lat": 46.0423158,
+                    "lng": 14.4882672
+                },
+                "GK5": {
+                    "y": 5460763.5,
+                    "x": 5099920.59
+                },
+                "GK6": {
+                    "y": 6228609.45,
+                    "x": 5105778.28
+                }
+            },
+            "management_network": {
+                "frequency": 2400,
+                "channel": 26,
+                "output_pwr_dbm": 3,
+                "antenna_type": "ANT-2.4-CW-CT-omni",
+                "antenna_gain_dbi": 2.8,
+                "min_rx_signal": -85,
+                "sinr": "NaN"
+            },
+            "experimental_network": {
+                "frequency": 868,
+                "channel": 0,
+                "output_pwr_dbm": 0,
+                "antenna_type": "ANT-868-CW-HW",
+                "antenna_gain_dbi": 0,
+                "min_rx_signal": -90,
+                "sinr": "NaN"
+            }
+        }
+    ]
+}
