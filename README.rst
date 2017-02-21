@@ -62,3 +62,7 @@ The experiment using toolbox contains following steps:
 * Implement a localization algorithm in python script
 * Perform a localization experiment
 * Plot/Analyse experiment results
+
+Contact
+
+For any additional information please contact tomaz.javornik@ijs.si
