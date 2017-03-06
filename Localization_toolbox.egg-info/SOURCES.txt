@@ -21,11 +21,11 @@ Figures/Raster/antenna_tower_Icon.png
 Figures/Raster/o_Icon.png
 Figures/Raster/s_Icon.png
 Figures/Raster/x_Icon.png
-Loclization_toolbox.egg-info/PKG-INFO
-Loclization_toolbox.egg-info/SOURCES.txt
-Loclization_toolbox.egg-info/dependency_links.txt
-Loclization_toolbox.egg-info/entry_points.txt
-Loclization_toolbox.egg-info/top_level.txt
+Localization_toolbox.egg-info/PKG-INFO
+Localization_toolbox.egg-info/SOURCES.txt
+Localization_toolbox.egg-info/dependency_links.txt
+Localization_toolbox.egg-info/entry_points.txt
+Localization_toolbox.egg-info/top_level.txt
 Programs/Python/RE/Measurements.py
 Programs/Python/RE/Measurements.pyc
 Programs/Python/RE/Radio_Env.py
