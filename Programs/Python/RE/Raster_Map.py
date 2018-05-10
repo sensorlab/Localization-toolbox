@@ -14,6 +14,19 @@ import numpy as np
 import matplotlib.pyplot as pyplot
 
 
+def generate_xy_mesh(West, South, d_West, d_South, Cols, Rows):
+    """
+    Generates the mesh grid of west-east and south north values.
+
+    :returns: X -> west-east, Y -> south - north  array of raster points (x, y)
+    """
+    East = West + d_West * Cols
+    North = South + d_South * Rows
+    x_tmp = np.linspace(West, East, Cols + 1)
+    y_tmp = np.linspace(South, North, Rows + 1)
+    X, Y = np.meshgrid(x_tmp, y_tmp)
+    return X, Y
+
 class RasterMap(object):
     """
         **Defines raster map object**
@@ -122,11 +135,7 @@ class RasterMap(object):
 
         :returns: X -> west-east, Y -> south - north  array of raster points (x, y)
         """
-        East = self.West + self.d_West * self.Cols
-        North = self.South + self.d_South * self.Rows
-        x_tmp = np.linspace(self.West, East, self.Cols + 1)
-        y_tmp = np.linspace(self.South, North, self.Rows + 1)
-        X, Y = np.meshgrid(x_tmp, y_tmp)
+        X, Y = generate_xy_mesh(self.West, self.South, self.d_West, self.d_South, self.Cols, self.Rows)
         return X, Y
 
     def set_Values(self, in_values):
@@ -184,7 +193,7 @@ class RasterMap(object):
         :returns:
         """
         cols, rows = self.xy_to_ColsRows(x, y)
-        self.Values[rows, cols] = Values
+        self.Values[rows, cols] = value
         return
 
     def copy(self, MapId):
@@ -215,9 +224,14 @@ class RasterMap(object):
         X, Y = self.generate_xy_mesh()
         X = X - float(Region[0])
         Y = Y - float(Region[1])
-        CS = pyplot.pcolormesh(X, Y, self.Values)
+        cmap = pyplot.get_cmap('seismic')
 
-        if ColorBar: pyplot.colorbar(CS)
+        if ColorBar:
+            CS = pyplot.pcolormesh(X, Y, self.Values, cmap=cmap)
+            pyplot.colorbar(CS)
+        else:
+            CS = pyplot.pcolormesh(X, Y, self.Values, cmap=cmap, vmin=-1, vmax=1)
+
         if ShowPlot: pyplot.show()
         return fig, ax
 
@@ -397,7 +411,7 @@ class RasterMaps(object):
         """
         :returns: raster maps Id
         """
-        return Id
+        return self.Id
 
     def get_Net(self):
         """
@@ -452,8 +466,27 @@ class RasterMaps(object):
         :param Map: raster map
         :returns:
         """
-        self.Maps.append(Map)
+        region = Map.get_Region()
+        if set(region) == set(self.Region.get_Region()):
+            self.Maps.append(Map)
         return
+
+    def append_Maps(self, Maps):
+        """
+        Adds a map to the maps.
+
+        :param Map: raster map
+        :returns:
+        """
+        reg_1 = set(self.get_Region().get_Region())
+        reg_2 = set(Maps.get_Region().get_Region())
+        if reg_1 == reg_2:
+            Ids = Maps.get_Map_Ids()
+            for id in Ids:
+                map = Maps.get_Map(id)
+                self.append_Map(map)
+        return
+
 
     def get_Map(self, MapId):
         """
@@ -466,6 +499,15 @@ class RasterMaps(object):
             if( map.get_Id() == MapId):
                 return map
         return None
+
+    def get_Map_Ids(self):
+        """
+        Map Ids         :returns:
+        """
+        out = []
+        for map in self.Maps:
+            out.append(map.get_Id())
+        return out
 
     def get_Length(self):
         """

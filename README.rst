@@ -1,4 +1,4 @@
-Localization toolbox
+Localization toolbox version 2.0
 
 Localization toolbox is a python framework, which enables developing, testing and evaluation of various localization algorithms. The localization algorithms evaluation can be based on simulated radio environments as well on radio environment based on measurements obtained from various testbeds.
 
@@ -25,6 +25,7 @@ Localization toolbox:
 * Results
 * temp
 * tests
+
 Data directory consists of various data files for conducting the experiment. Comma separated value files are stored in csv subdirectory, JSON files in json subdirectory, python data file in npy directory, different data files in txt subdirectory, MS excel files in xls subdirectory, and txt data with xyz format in xyz subdirectory. 
 
 Figures directory contain two subdirectories namely, the first for storing raster files, and the second one contains the figure vector figures.
@@ -49,8 +50,27 @@ RE directory contains the description of radio environment:
 * Measurements.py:
     o class: Measurement: describes a single measurement
     o class: Trace: a set of radio measurements
+* Cooperative_Localization.py:
+    o class: BP_message: belief propagation message
+    o class: BP_message_list: a set(list) of belief propagation messages
+    o class: BP_beliefs: a set of beliefs
+       
 Results directory contains temporary simulation results. 
 Temporary files should be stored in temp directory.
+
+misc directory contains the classes and files for managing GIS data and other input output files:
+* iniProject
+    o a set of procedures for managing the directory structure of the project
+* GIS.py
+    o a set of procedures for conversion between different GIS coordinate systems
+    o class: google_map: a class to prepare the presentation of the results in Google maps
+
+bin directory contains examples how to build the experiment:
+    o Exp_Cooperative_localization: a python script demo for cooperative localization
+    o Exp_Localizatation_LS_FP: a python script demo for least squares and finger printing localization
+    o Cooperative_Localization: a test environment for developing new cooperative localization techniques
+    
+    
 Building experiment:
 The experiment using toolbox contains following steps:
 * Setting up radio environment

@@ -1,0 +1,12 @@
+{
+  "Simulation parameters": {
+    "Anchors file": "Log-a-Tec_2_JSI - 4A.csv", 
+    "Quantization step": 4.0, 
+    "Number of experiments": 10, 
+    "Number of agents": 100, 
+    "Localization method": "LS", 
+    "Path Loss exponent": 2.0, 
+    "Propagation channel": "LogNormal", 
+    "Channel parameters": 0.1
+  }
+}

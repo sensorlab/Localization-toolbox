@@ -6,10 +6,12 @@
 
 import os
 import numpy as np
+import copy
 import matplotlib.pyplot as pyplot
 import misc.iniProject as iniProject
 import misc.GIS
 import RE.Raster_Map as Raster_Map
+import RE.Cooperative_Localization as CoopLoc
 
 ErrorStr = "--- ERROR: "
 WarningStr = "--- Warning: "
@@ -59,6 +61,28 @@ def RSSI_to_dist(RSSI_dBm, fc_MHz, tx_pow_dBm, pl_coef):
     x = float(tx_pow_dBm) - float(RSSI_dBm) - 20.0 * np.log10(float(fc_MHz)) + 27.55
     dist = np.power(10, x/10.0/float(pl_coef))
     return dist
+
+
+class BP_message(object):
+    """
+    Defines a message for beliefe propaation algorithm
+    """
+    def __init__(self, origin, destination, shape):
+        self.org = origin                               # origin node of message
+        self.dest = destination                         # destination node of message
+        self.value = np.zeros(shape, dtype=float)       # value of message, np.array
+        return
+
+    def get_org_dest(self):
+        return self.org, self.dest
+
+    def get_value(self):
+        return self.value
+
+    def set_org_dest(self, origin, destination):
+        self.org = origin
+        self.dest = destination
+        return
 
 
 class RadioNode(object):
@@ -205,6 +229,26 @@ class RadioNode(object):
 
             if NumArgs == 0:
                 print ErrorStr + "In Radio Node! Argument error!"
+        return
+
+    def copy(self):
+        new_node = copy.deepcopy(self)
+        return new_node
+
+    def set_WGS84(self, x):
+        self.WGS84 = x
+        return
+
+    def set_Chan(self, x):
+        self.Chan = x
+        return
+
+    def set_Range(self, x):
+        self.Range = x
+        return
+
+    def set_TxRx(self, x):
+        self.TxRx = x
         return
 
     def get_Id(self):
@@ -659,6 +703,7 @@ class RadioNetwork(object):
     def __init__(self, *args):
         self.Id = args[0]
         self.RadioNodes = []
+        self.Connections = []
         if len(args) > 1:
             # add empty nodes
             for i in range(0, args[1]):
@@ -690,7 +735,7 @@ class RadioNetwork(object):
         :param Measurements_Id: id of measurements
         :param Anchors_Id: id of anchor network
         :param pl_exp: pathloss exponent
-        :param ref_anchor_index: reference anchor  index
+        :param ref_anchor_index: reference anchor index
 
         :returns:
         """
@@ -698,9 +743,72 @@ class RadioNetwork(object):
             node.est_loc_FP(radio_env, Measurements_Id, Anchors_Id, self.Id, pl_exp, ref_anchor_index)
         return
 
+    def est_loc_BP(self, radio_env, Measurements_Id, Anchors_Id, Agents_Id, pl_exp, n_iter):
+        """
+        Estimate locations of nodes in radio network applying BP method.
+        :param radio_env:  radio environment
+        :param Measurements_Id: id of measurements
+        :param Anchors_Id: id of anchor network
+        :param pl_exp: pathloss exponent
+        :param n_iter: number of iterations
+        :return:
+        """
+        Anchors = radio_env.get("Network", Anchors_Id)
+        Agents = radio_env.get("Network", Agents_Id)
+        Measurs = radio_env.get("Measurements", Measurements_Id)
+        Anchors_Ids = Anchors.get_RadioNode_Ids()
+        Agents_Ids = Agents.get_RadioNode_Ids()
+
+        Maps = radio_env.get("Raster Map", "RSSI")
+        Region = Maps.get_Region().get_Region()
+
+        # get Anchor locations
+        Anchors_Loc = []
+        for id in Anchors_Ids:
+            loc = Anchors.get_RadioNode_Loc(id)
+            fc_MHz = Anchors.get_RadioNode_FcMHz(id)
+            tx_pow = Anchors.get_RadioNode_PowdBm(id)
+            Anchors_Loc.append([loc[0], loc[1]])
+
+        Node_Ids = Anchors_Ids + Agents_Ids
+        Num_measure = Measurs.len()
+
+        dist_matrix = []
+        row = []
+        i_row = 0
+        for ix in range(0, Num_measure):
+            powdB = Measurs.get_by_index(ix).get_Value()
+            dist = RSSI_to_dist(powdB, fc_MHz, tx_pow, pl_exp)
+            row.append(dist)
+            i_row = i_row + 1
+            if i_row >= len(Node_Ids):
+                dist_matrix.append(row)
+                row = []
+                i_row = 0
+        dist_matrix = np.array(dist_matrix)
+        np.fill_diagonal(dist_matrix, 0.0)
+        dist_matrix = 0.5 *(dist_matrix + np.transpose(dist_matrix))
+
+        Locs = []
+        for x in Anchors_Loc:
+            Locs.append([float(x[0]), float(x[1])])
+
+        Agents_Loc = CoopLoc.BP_localization(Locs, dist_matrix, Region, n_iter, False)
+        Ids = self.get_RadioNode_Ids()
+        ii = len(Anchors_Ids)
+
+        for id in Agents_Ids:
+            agent = Agents.get_RadioNode(id)
+            loc = Agents_Loc[ii]
+            agent.set_Loc(loc)
+            ii = ii + 1
+
+        return
+
+
     def loc_error(self, ref_network, plothist, D3):
         """
-        Esitmates location error between refence network and radio network.
+        Esitmates location error between reference network and radio network.
 
         :param ref_network: reference network
         :param plothist: flag for printng error histogram
@@ -724,17 +832,17 @@ class RadioNetwork(object):
         if D3:
             dist_Error = np.sqrt(Error[:, 0] + Error[:, 1] + Error[:, 2] )
 
-        print "\n---------------------------------------------------"
-        print "     Mean distance error =   " + str(np.mean(dist_Error))
-        print "     Medina distance error = " + str(np.median(dist_Error))
-        print "     Std. deviation error =  " + str(np.std(dist_Error))
-        print "\n---------------------------------------------------"
-
         if plothist:
+            print "\n---------------------------------------------------"
+            print "     Mean distance error =   " + str(np.mean(dist_Error))
+            print "     Medina distance error = " + str(np.median(dist_Error))
+            print "     Std. deviation error =  " + str(np.std(dist_Error))
+            print "\n---------------------------------------------------"
+
             num_bins = 20
             n, bins, patches = pyplot.hist(dist_Error, num_bins, normed=1, facecolor='green', alpha=0.5)
             pyplot.show()
-        return [np.mean(dist_Error), np.median(dist_Error), np.std(dist_Error)]
+        return [np.mean(dist_Error), np.median(dist_Error), np.std(dist_Error), np.max(dist_Error)]
 
     def set_Id(self, Id):
         """
@@ -968,17 +1076,50 @@ class RadioNetwork(object):
         NodeName = []
         for node in self.RadioNodes:
             loc = node.get_Loc()
-            X.append(loc[0])
-            Y.append(loc[1])
-            Z.append(loc[2])
+            X.append(float(loc[0]))
+            Y.append(float(loc[1]))
+            Z.append(float(loc[2]))
             NodeName.append(node.get_Name())
         pyplot.plot(X, Y, Marker)
         pyplot.title(self.Id)
 
-        for x, y, name in zip(X,Y, NodeName):
-            ax.annotate(name, xy=(x, y), xytext=(float(x) + float(delta), float(y) + float(delta)),
+        if delta != 0:
+            for x, y, name in zip(X,Y, NodeName):
+                ax.annotate(name, xy=(x, y), xytext=(float(x) + float(delta), float(y) + float(delta)),
                         arrowprops=dict(facecolor='blue', shrink=0.05),)
 
+        if ShowPlot:
+            pyplot.show()
+        return fig
+
+    def plot_compare(self, netw, Marker, FigNum, ShowPlot, delta):
+        self.plot(Marker, FigNum, False, delta)
+        netw.plot(Marker + "r", FigNum, False, delta)
+        Ids = netw.get_RadioNode_Ids()
+        for id in Ids:
+            loc_self = self.get_RadioNode_Loc(id)
+            loc_netw = netw.get_RadioNode_Loc(id)
+            x = [float(loc_self[0]), float(loc_netw[0])]
+            y = [float(loc_self[1]), float(loc_netw[1])]
+            pyplot.plot(x, y, "k--")
+        if ShowPlot:
+            pyplot.show()
+
+    def plot_connects(self, Marker, FigNum, ShowPlot, delta):
+        self.plot(Marker, FigNum, False, delta)
+        i = 0
+        j = 0
+        for node_i in self.RadioNodes:
+            j = 0
+            loc = node_i.get_Loc()
+            x_i = loc[0]
+            y_i = loc[1]
+            for node_j in self.RadioNodes:
+                if self.Connections[i][j] > 0:
+                    loc = node_j.get_Loc()
+                    pyplot.plot([x_i, loc[0]], [y_i, loc[1]], "-")
+                j = j + 1
+            i = i + 1
         if ShowPlot:
             pyplot.show()
         return
@@ -1152,10 +1293,11 @@ class RadioNetwork(object):
         idx = self.get_RadioNode_Index(nodeId)
         self.RadioNodes.pop(idx)
         node.set_Loc(Loc)
-        self.RadioNodes.append(node)
+        self.RadioNodes.insert(idx, node)
+        #self.RadioNodes.append(node)
         return
 
-    def get_Region_Map(self, margin):
+    def get_Region_Map(self, margin, delta_west = 1.0, delta_south = 1.0):
         """
         Returns radio map region.
 
@@ -1163,8 +1305,6 @@ class RadioNetwork(object):
         :returns: region map [west, south, delta_west, delta_south, cols, rows]
         """
         limits = self.get_AreaLimits(margin)
-        delta_west = 1.0
-        delta_south = 1.0
         west = limits[0][0]
         south = limits[0][1]
         east = limits[1][0]
@@ -1193,9 +1333,222 @@ class RadioNetwork(object):
             loc = loc_sw + loc_rnd
             node = RadioNode("Id", i)
             node.set_Loc(loc[0])
+            node.set_Name(str(i))
             self.append_RadioNode(node)
         return
 
+    def est_distance_matrix(self, dim):
+        """
+        Estimates the distances between nodes
+        in 2 or 3 dimensions
+
+        :param dim: 2 for in 2 dimensions, 3 in 3 dimensions
+
+        :return: distance matrix
+        """
+        i = 0
+        N_nodes = len(self.RadioNodes)
+        dist = np.empty([N_nodes, N_nodes], dtype=float)
+        for node_a in self.RadioNodes:
+            loc_a = node_a.get_Loc()
+            j = 0
+            for node_b in self.RadioNodes:
+                loc_b = node_b.get_Loc()
+                x = float(loc_a[0]) - float(loc_b[0])
+                y = float(loc_a[1]) - float(loc_b[1])
+                z = float(loc_a[2]) - float(loc_b[2])
+                d = x*x + y*y
+                if dim == 3:
+                    d = d + z*z
+                d = np.sqrt(d)
+                dist[i, j]  = d
+                j = j + 1
+            i = i + 1
+        return dist
+
+    def est_normal_matrix(self, dim):
+        """
+        Estimates the normals vectors connecting  node i and j
+        in 2 or 3 dimensions
+
+        :param dim: 2 for in 2 dimensions, 3 in 3 dimensions
+
+        :return: normal matrix
+        """
+
+        i = 0
+        N_nodes = len(self.RadioNodes)
+        normals = np.empty([N_nodes, N_nodes, 3], dtype=float)
+        for node_a in self.RadioNodes:
+            loc_a = node_a.get_Loc()
+            j = 0
+            for node_b in self.RadioNodes:
+                loc_b = node_b.get_Loc()
+                x = float(loc_a[0]) - float(loc_b[0])
+                y = float(loc_a[1]) - float(loc_b[1])
+                z = float(loc_a[2]) - float(loc_b[2])
+                norm = x*x + y*y
+                if dim == 3:
+                    norm = norm + z*z
+                norm = np.sqrt(norm)
+                if norm  <= 0:
+                    normals[i, j] = np.array([0,0,0])
+                else:
+                    normals[i, j] = np.array([x/norm, y/norm, z/norm])
+                j = j + 1
+            i = i + 1
+        return normals
+
+    def set_connects(self, connects):
+        self.Connections = connects
+        return
+
+    def est_connects(self, type, value, dim):
+        """
+        Method finds connections between nodes in network
+        :param type: type of connection max_dist: maximal distance, num_conn: number of connections
+        :param value: threshold to find connection
+        :param dim: dimensions 2 => 2D, 3 => 3D
+        :return:
+        """
+
+        dist_matrix = self.est_distance_matrix(dim)
+        self.Connections = np.empty(dist_matrix.shape, dtype=float)
+
+        if type == "max_dist":
+            for i in range(len(dist_matrix)):
+                for j in range(len(dist_matrix[i])):
+                    self.Connections[i][j] = dist_matrix[i][j]
+                    if dist_matrix[i][j] > value:
+                        self.Connections[i][j] = 0.0
+            return
+
+        if type == "num_conn":
+            for i in range(len(dist_matrix)):
+                dist_vec = dist_matrix[i]
+                n = dist_vec.size - (value + 1)
+                ind = np.argpartition(dist_vec, -n)[-n:]
+                dist_vec[ind] = 0.0
+                self.Connections[i] = dist_vec
+            return
+
+    def get_connects_hist(self):
+        """
+
+        :return: connection histogram of network
+        """
+        node_connections = []
+        bins = range(0, self.get_Len())
+
+        for i in range(len(self.Connections)):
+            x = self.Connections[i]
+            node_connections.append(np.count_nonzero(x))
+
+        a, b = np.histogram(node_connections, bins)
+        pyplot.hist(node_connections, bins)
+        ind = np.argmax(a)
+        print "   Number of nodes: ",  a[ind], ", with ", b[ind], " connections."
+        pyplot.show()
+
+        return
+
+    def get_connect(self):
+        return self.Connections
+
+    def copy_netw(self, netw_name):
+        """
+        :param netw_name: network name
+        :return: copy of the network
+        """
+        out_netw = copy.deepcopy(self)
+        out_netw.set_Id(netw_name)
+        return out_netw
+
+    def add_rnd_dist(self, *arg):
+        # generate mask to affect only connections
+        mask = self.Connections.copy()
+        mask[mask > 0] = 1.0
+        shape = self.Connections.shape
+
+        if arg[0] == "Normal":
+            mu = arg[1]
+            sigma = arg[2]
+            noise = np.random.normal(mu, sigma, shape)
+        elif arg[0] == "Uniform":
+            low = arg[1]
+            high = arg[2]
+            noise = np.random.uniform(low, high, shape)
+        elif arg[0] == "Rayleigh":
+            val = abs(arg[1])
+            noise = np.random.rayleigh(val, shape)
+        elif arg[0] == "LogNormal":
+            mu = arg[1]
+            sigma = arg[2]
+            noise = np.random.lognormal(mu, sigma, shape)
+        else:
+            print ErrorStr  + "The distribution of noise is not correct!"
+            print ErrorStr  + "No noise is added!"
+            return
+        self.Connections = self.Connections + noise * mask
+        return
+
+
+
+#        while (error[0] > mean_error) and (iter < iter_max):
+#            iter = iter + 1
+
+        return np.array(out)
+
+    def coop_loc_LS(self, n_anchors, mean_error, delta, dim, iter_max):
+        print "    Start coop loc LS: ",
+        iter = 0
+        error = []
+        error.append(9999.0)
+        out = []
+        # self.plot('ro', 1, False, 0)
+        netw = self.copy_netw("Working network")
+        Ids = netw.get_RadioNode_Ids()
+        loc = [500, 500, 0]
+        for i in range(n_anchors, len(Ids)):
+            netw.set_RadioNode_Loc(Ids[i], loc)
+
+        print "    Error [mean, max]: ",
+        while (error[0] > mean_error) and (iter < iter_max):
+            iter = iter + 1
+            # netw.plot('s', 2, False, 0)
+            normals = netw.est_normal_matrix(dim)
+            dist_ref = self.est_distance_matrix(dim) * self.get_connect()
+
+            dist = netw.est_distance_matrix(dim) * self.get_connect()
+            delta_dist = dist_ref - dist
+
+            node_num = -1
+            for d, e in zip(delta_dist, normals):
+                node_num = node_num + 1
+                if (node_num >= n_anchors):
+                    loc = []
+                    for x in np.transpose(e):
+                        loc.append(np.dot(x, d))
+                    loc_old = netw.get_RadioNode_Loc(Ids[node_num])
+                    loc_new = []
+                    for l,x  in zip(loc_old, loc):
+                        loc_new.append(float(l) + delta * x)
+                    netw.set_RadioNode_Loc(Ids[node_num], loc_new)
+
+            error = self.loc_error(netw, False, False)
+            out.append(error)
+            if iter % int(iter_max/5) == 0:
+                print_str = [int(error[0]), int(error[3])]
+                print print_str,
+
+        # netw.plot('go', 3, True, 0)
+        print_str = [int(error[0]), int(error[3]), iter]
+        print " \n       [Mean error, Max error, Iter]: ", print_str
+        print "    End coop loc LS: "
+        for idx in Ids:
+            node = netw.get_RadioNode(idx)
+            self.set_RadioNode_Loc(idx, node.get_Loc())
+        return np.array(out)
 
 if __name__ == '__main__':
 
@@ -1221,5 +1574,5 @@ if __name__ == '__main__':
     print BaseStations.get_Id()
     print BaseStations.get_RadioNode_Ids()
     print BaseStations.get_AreaLimits(0.1)
-    BaseStations.plot("s", 1, True, 1)
+    BaseStations.plot("s", 1, True, 10)
 

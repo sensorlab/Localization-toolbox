@@ -1,0 +1,57 @@
+{
+  "Simulation parameters": {
+    "Anchors file": "Log-a-Tec_2_JSI - 4A.csv", 
+    "Quantization step": 1.0, 
+    "Number of experiments": 5, 
+    "Number of agents": 5, 
+    "Localization method": "BP", 
+    "Path Loss exponent": 2.0, 
+    "Propagation channel": "", 
+    "Channel parameters": 0.1
+  }
+}
+{
+  "Simulation number": 0, 
+  "Results": {
+    "Median error": 6.0238498205990298, 
+    "Std error": 5.1675868431881051, 
+    "Mean error": 7.3223187563480012, 
+    "Max error": 16.051387929900198
+  }
+}
+{
+  "Simulation number": 1, 
+  "Results": {
+    "Median error": 54.683611419959419, 
+    "Std error": 41.179641393088723, 
+    "Mean error": 57.632739602723646, 
+    "Max error": 126.6650755930706
+  }
+}
+{
+  "Simulation number": 2, 
+  "Results": {
+    "Median error": 42.566734145017449, 
+    "Std error": 17.855122876030439, 
+    "Mean error": 44.953985818291436, 
+    "Max error": 75.552278899406318
+  }
+}
+{
+  "Simulation number": 3, 
+  "Results": {
+    "Median error": 28.522677023387327, 
+    "Std error": 11.805009885248236, 
+    "Mean error": 26.356688737619503, 
+    "Max error": 43.937412487493383
+  }
+}
+{
+  "Simulation number": 4, 
+  "Results": {
+    "Median error": 60.006981088418549, 
+    "Std error": 14.702551495370697, 
+    "Mean error": 55.876217389496446, 
+    "Max error": 77.094061189066551
+  }
+}

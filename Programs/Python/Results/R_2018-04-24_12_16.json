@@ -1,0 +1,102 @@
+{
+  "Simulation parameters": {
+    "Anchors file": "Log-a-Tec_2_JSI - 4A.csv", 
+    "Quantization step": 4.0, 
+    "Number of experiments": 10, 
+    "Number of agents": 100, 
+    "Localization method": "LS", 
+    "Path Loss exponent": 2.0, 
+    "Propagation channel": "LogNormal", 
+    "Channel parameters": 0.1
+  }
+}
+{
+  "Simulation number": 0, 
+  "Results": {
+    "Median error": 7.5745237480366336, 
+    "Std error": 6.0590292252125142, 
+    "Mean error": 9.349732430778996, 
+    "Max error": 38.333938562555986
+  }
+}
+{
+  "Simulation number": 1, 
+  "Results": {
+    "Median error": 7.741939033952808, 
+    "Std error": 4.7328344902663266, 
+    "Mean error": 8.7222992156560082, 
+    "Max error": 22.738186849753777
+  }
+}
+{
+  "Simulation number": 2, 
+  "Results": {
+    "Median error": 9.0431084627013867, 
+    "Std error": 7.0701401813799256, 
+    "Mean error": 11.028695728313155, 
+    "Max error": 33.958832634645084
+  }
+}
+{
+  "Simulation number": 3, 
+  "Results": {
+    "Median error": 9.1456032937552205, 
+    "Std error": 7.1169490663441826, 
+    "Mean error": 10.891104191497867, 
+    "Max error": 29.241539581731178
+  }
+}
+{
+  "Simulation number": 4, 
+  "Results": {
+    "Median error": 7.8977811580250101, 
+    "Std error": 6.8129278289839235, 
+    "Mean error": 9.7336888529074912, 
+    "Max error": 38.021091312212533
+  }
+}
+{
+  "Simulation number": 5, 
+  "Results": {
+    "Median error": 8.6112425751157087, 
+    "Std error": 7.1791696262156739, 
+    "Mean error": 10.811137272414403, 
+    "Max error": 31.527393232757291
+  }
+}
+{
+  "Simulation number": 6, 
+  "Results": {
+    "Median error": 9.0306229430154961, 
+    "Std error": 6.3076875300840163, 
+    "Mean error": 10.196642029800413, 
+    "Max error": 28.154517575535095
+  }
+}
+{
+  "Simulation number": 7, 
+  "Results": {
+    "Median error": 9.3120057707255768, 
+    "Std error": 7.231276755667821, 
+    "Mean error": 11.04670819370142, 
+    "Max error": 33.750315911114733
+  }
+}
+{
+  "Simulation number": 8, 
+  "Results": {
+    "Median error": 8.4506587776974413, 
+    "Std error": 5.438641869378583, 
+    "Mean error": 9.316342664914691, 
+    "Max error": 26.791508395899672
+  }
+}
+{
+  "Simulation number": 9, 
+  "Results": {
+    "Median error": 9.6988094176363759, 
+    "Std error": 6.2790722705316684, 
+    "Mean error": 11.004524708767088, 
+    "Max error": 27.249542630423822
+  }
+}

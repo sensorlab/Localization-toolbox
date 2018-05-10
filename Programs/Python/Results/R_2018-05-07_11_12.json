@@ -1,0 +1,21 @@
+{
+  "Simulation parameters": {
+    "Anchors file": "Log-a-Tec_2_JSI - 4A.csv", 
+    "Quantization step": 1.0, 
+    "Number of experiments": 1, 
+    "Number of agents": 2, 
+    "Localization method": "BP", 
+    "Path Loss exponent": 2.0, 
+    "Propagation channel": "", 
+    "Channel parameters": 0.1
+  }
+}
+{
+  "Simulation number": 0, 
+  "Results": {
+    "Median error": 5.2657843298345792, 
+    "Std error": 0.1278742273707234, 
+    "Mean error": 5.2657843298345792, 
+    "Max error": 5.3936585572053026
+  }
+}
