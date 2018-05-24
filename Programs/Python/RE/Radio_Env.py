@@ -5,6 +5,7 @@
 """
 
 import RE.Raster_Map as Map
+import RE.Cooperative_Localization as CoopLoc
 
 ErrorStr = "--- ERROR: "
 WarningStr = "--- Warning: "
@@ -36,7 +37,11 @@ class RadioEnvironment(object):
         IJS_Outdoor.set_Region([0.0, 0.0, 1.0, 1.0, 10, 10])
 
         """
-        self.Region = Region
+        if type(Region) is list:
+            x = Map.RasterMap("Region", Region[0], Region[1], Region[2], Region[3], Region[4], Region[5])
+            self.Region = x
+        else:
+            self.Region = Region
         return
 
     def get_Region(self):
@@ -108,7 +113,8 @@ class RadioEnvironment(object):
             idx = self.Network_Ids.index(Id)
             return self.Networks[idx]
         elif typ == "Raster Map":
-            return self.Raster_Maps[0]
+            idx = self.Raster_Map_Ids.index(Id)
+            return self.Raster_Maps[idx]
         elif typ == "Measurements":
             idx = self.Measurement_Ids.index(Id)
             return self.Measurements[idx]
@@ -138,7 +144,7 @@ class RadioEnvironment(object):
         elif typ == "Measurements":
             idx = self.Measurement_Ids.index(Id)
             self.Measurements.pop(idx)
-            self.Measurements_Ids.pop(idx)
+            self.Measurement_Ids.pop(idx)
             return
         else:
             print ErrorStr + "Radio environment type --- " + str(typ) + " --- is not defined!"
@@ -158,7 +164,7 @@ class RadioEnvironment(object):
             self.delete(typ, Id)
             self.append(typ, Id, element)
         except ValueError:
-            print ErrorStr + " Can not replace element with Id: " + str(Id)
+            self.append(typ, Id, element)
         return
 
     def experiment_est_loc_LS(self, pl_exp, ref_node_index, hist_plot):
@@ -183,7 +189,6 @@ class RadioEnvironment(object):
         agents.loc_error(ref_network, hist_plot, False)
         return
 
-
     def experiment_est_loc_FP(self, pl_exp, ref_node_index, hist_plot):
         """
 
@@ -205,6 +210,60 @@ class RadioEnvironment(object):
         ref_network = self.get("Network", "refAgents")
         agents.loc_error(ref_network, hist_plot, False)
         return
+
+    def experiment_est_loc_BP(self, pl_exp, ref_node_index, hist_plot, n_iter):
+        """
+
+        Describes experiment in radio environment:
+
+        estimates the agent locations based using believe propagation method
+
+        :param float pl_exp: path loss exponent to convert RSSI to distance
+        :param int ref_node_index: index of the reference node
+        :param bool hist_plot: flag for plotting histogram of errors
+
+        :returns:
+        """
+        print "\n   Believe propagation localization method for a node location:"
+        Anchors_Id = "Anchors"
+        Agents_Id = "Agents"
+        Measurements_Id = "RSSI"
+        agents = self.get("Network", Agents_Id)
+
+        agents.est_loc_BP(self, Measurements_Id, Anchors_Id, Agents_Id, pl_exp, n_iter)
+
+        ref_network = self.get("Network", "refAgents")
+
+        agents.loc_error(ref_network, hist_plot, False)
+        return
+
+    def experiment_est_loc_CR(self, pl_exp, ref_node_index, hist_plot, n_iter):
+        """
+
+        Describes experiment in radio environment:
+
+        estimates the agent locations based using convex relaxation method
+
+        :param float pl_exp: path loss exponent to convert RSSI to distance
+        :param int ref_node_index: index of the reference node
+        :param bool hist_plot: flag for plotting histogram of errors
+
+        :returns:
+        """
+        print "\n   Convex relaxation  localization method for a node location:"
+        Anchors_Id = "Anchors"
+        Agents_Id = "Agents"
+        Measurements_Id = "RSSI"
+        agents = self.get("Network", Agents_Id)
+
+        agents.est_loc_CR(self, Measurements_Id, Anchors_Id, Agents_Id, pl_exp, n_iter)
+
+        ref_network = self.get("Network", "refAgents")
+
+        agents.loc_error(ref_network, hist_plot, False)
+        return
+
+
 
 if __name__ == '__main__':
     print "Test radio environment"

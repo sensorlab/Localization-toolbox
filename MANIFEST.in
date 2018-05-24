@@ -4,5 +4,6 @@ recursive-include Programs/Python/RE *
 recursive-include Programs/Python/docs *
 recursive-include Programs/Python/temp *
 recursive-include Programs/Python/Results *
+recursive-include Programs/Python/tests *
 recursive-include Data *
 recursive-include Figures *

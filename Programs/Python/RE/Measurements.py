@@ -385,6 +385,9 @@ class Trace(object):
                 out.append(x)
         return out
 
+    def get_by_index(self, idx):
+        return self.Measures[idx]
+
     def set_values_from_maps(self, Maps, Locs, Rx_Ids, Tx_Ids, x):
         """
         Sets measurement value from the raster maps.
@@ -411,15 +414,23 @@ class Trace(object):
         """
         add error to the measurement
         :param args: type of error
+        - Rayleigh: add a Rayleigh fading
+        - LogNormal: add a LogNormal fading, args[1] = mean, sigma
+        - Rice: add a Rice fading with the with K factor ) args[2]
         :returns:
         """
         Vals = []
         Ids = []
-        if args[0] == "Rayleigh":
-            for x in self.Measures:
+        for x in self.Measures:
+            if args[0] == "Rayleigh":
                 error = 10.0*np.log10(np.random.rayleigh(1, 1))
-                Vals.append(x.get_Value() + error)
-                Ids.append(x.get_Id())
+            if args[0] == "LogNormal":
+                error = 10.0*np.log10(np.random.lognormal(args[1], args[2], 1))
+            if args[0] == "Rice":
+                error = 10.0*np.log10(np.random.rayleigh(args[1], 1))
+
+            Vals.append(x.get_Value() + error)
+            Ids.append(x.get_Id())
 
         for val, id in zip(Vals, Ids):
             self.set_measure_value(id, val)
